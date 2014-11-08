@@ -151,7 +151,7 @@ static void detect_atari_partmap_ext(SECTION *section, u8 extbase, int level)
       } else {
 	/* real partition */
 
-	sprintf(append, " from %lu", start);
+	sprintf(append, " from %lu", start + tablebase);
 	format_blocky_size(s, size, 512, "sectors", append);
 	print_line(level, "Partition %d: %s",
 		   extpartnum, s);
