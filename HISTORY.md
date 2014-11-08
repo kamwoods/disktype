@@ -1,7 +1,5 @@
-$Id: HISTORY,v 1.32 2006/06/05 07:57:51 chrisp Exp $   -*- text -*-
-
- disktype History
-==================
+disktype History
+--------------------------------------------------------------------------------------------------------
 
 Version 1 was released on Feb 11, 2003. It supported the following
 formats:
