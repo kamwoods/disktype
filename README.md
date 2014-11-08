@@ -1,4 +1,4 @@
-disktype: A disk format detection tool
+disktype: Disk Format Detection (a fork of Christopher Pfisterer's disktype)
 ---------------------------------------------------------------------------------------------------
 
 # Introduction
