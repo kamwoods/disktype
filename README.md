@@ -1,7 +1,10 @@
-disktype: Disk Format Detection (a fork of Christopher Pfisterer's disktype)
+disktype: Disk Format Detection
 ---------------------------------------------------------------------------------------------------
 
-# Introduction
+* Note! This is a fork of disktype created to address my own devlopment needs. You can find 
+  Christoph Pfisterer's official repository and documentation at http://disktype.sourceforge.net/
+
+# Introduction 
 
 The purpose of disktype is to detect the content format of a disk or
 disk image. It knows about common file systems, partition tables, and
@@ -25,7 +28,7 @@ certain system-dependent features based on that. If you run into
 problems, you can disable all system-dependent features by setting the
 variable NOSYS, as in 'make NOSYS=1'.
 
-Running make results in the binary 'disktype'. Copy it to a 'bin'
+Running make in the src/ directory results in the binary 'disktype'. Copy it to a 'bin'
 directory of your choice, optionally stripping it on the way. It does
 not require any additional files.
 
