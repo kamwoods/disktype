@@ -28,10 +28,43 @@
 #include "global.h"
 
 /*
- * ext2/ext3 file system
+ * ext2/ext3/ext4 file system
  */
 
-void detect_ext23(SECTION *section, int level)
+/* for s_flags */
+#define EXT2_FLAGS_TEST_FILESYS 0x0004
+
+/* for s_feature_compat */
+#define EXT3_FEATURE_COMPAT_HAS_JOURNAL     0x0004
+
+/* for s_feature_ro_compat */
+#define EXT2_FEATURE_RO_COMPAT_SPARSE_SUPER 0x0001
+#define EXT2_FEATURE_RO_COMPAT_LARGE_FILE   0x0002
+#define EXT2_FEATURE_RO_COMPAT_BTREE_DIR    0x0004
+#define EXT4_FEATURE_RO_COMPAT_HUGE_FILE    0x0008
+#define EXT4_FEATURE_RO_COMPAT_GDT_CSUM     0x0010
+#define EXT4_FEATURE_RO_COMPAT_DIR_NLINK    0x0020
+#define EXT4_FEATURE_RO_COMPAT_EXTRA_ISIZE  0x0040
+
+/* for s_feature_incompat */
+#define EXT2_FEATURE_INCOMPAT_FILETYPE      0x0002
+#define EXT3_FEATURE_INCOMPAT_RECOVER       0x0004
+#define EXT3_FEATURE_INCOMPAT_JOURNAL_DEV   0x0008
+#define EXT2_FEATURE_INCOMPAT_META_BG       0x0010
+#define EXT4_FEATURE_INCOMPAT_EXTENTS       0x0040
+#define EXT4_FEATURE_INCOMPAT_64BIT         0x0080
+#define EXT4_FEATURE_INCOMPAT_MMP           0x0100
+#define EXT4_FEATURE_INCOMPAT_FLEX_BG       0x0200
+
+#define EXT3_FEATURE_RO_COMPAT_UNSUPPORTED ~(EXT2_FEATURE_RO_COMPAT_SPARSE_SUPER | \
+                                             EXT2_FEATURE_RO_COMPAT_LARGE_FILE | \
+                                             EXT2_FEATURE_RO_COMPAT_BTREE_DIR)
+
+#define EXT3_FEATURE_INCOMPAT_UNSUPPORTED  ~(EXT2_FEATURE_INCOMPAT_FILETYPE | \
+                                             EXT3_FEATURE_INCOMPAT_RECOVER | \
+                                             EXT2_FEATURE_INCOMPAT_META_BG)
+
+void detect_ext234(SECTION *section, int level)
 {
   unsigned char *buf;
   char s[256];
@@ -45,7 +78,28 @@ void detect_ext23(SECTION *section, int level)
     if (get_le_long(buf + 96) & 0x0008)       /* JOURNAL_DEV flag */
       print_line(level, "Ext3 external journal");
     else if (get_le_long(buf + 92) & 0x0004)  /* HAS_JOURNAL flag */
-      print_line(level, "Ext3 file system");
+    {
+      /* Try to find if it is ext4 by checking if there are any unsupported features of ext3 */
+      if ((get_le_long(buf + 96) & EXT3_FEATURE_INCOMPAT_UNSUPPORTED) && (get_le_long(buf + 100) & EXT3_FEATURE_RO_COMPAT_UNSUPPORTED))
+      {
+        /* We have ext4 but which version */
+        if (get_le_long(buf + 352) & EXT2_FLAGS_TEST_FILESYS)
+        {
+          print_line(level, "Ext4dev file system");
+          print_line(level, "KERNELMODULE: ext4dev");
+        }
+        else
+        {
+          print_line(level, "Ext4 file system");
+          print_line(level, "KERNELMODULE: ext4");
+        }
+      }
+      else
+      {
+        print_line(level, "Ext3 file system");
+        print_line(level, "KERNELMODULE: ext3");
+      }
+    }
     else
       print_line(level, "Ext2 file system");
 
