@@ -1,0 +1,13 @@
+diff -N -r -u -E -b -w -B disktype/atari.c disktype.atari/atari.c
+--- disktype/atari.c	2009-04-05 07:23:24.000000000 -0600
++++ disktype.atari/atari.c	2011-03-06 07:25:25.000000000 -0700
+@@ -151,7 +151,7 @@
+       } else {
+         /* real partition */
+ 
+-        sprintf(append, " from %lu", start);
++        sprintf(append, " from %lu", start + tablebase);
+         format_blocky_size(s, size, 512, "sectors", append);
+         print_line(level, "Partition %d: %s",
+                    extpartnum, s);
+
