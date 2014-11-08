@@ -59,7 +59,7 @@ for some example command lines.
 The following formats are recognized by this version of disktype.
 
 File systems: FAT12/FAT16/FAT32, NTFS, HPFS, MFS, HFS, HFS Plus,
-  ISO9660, ext2/ext3, Minix, ReiserFS, Reiser4, Linux romfs, Linux
+  ISO9660, ext2/ext3/ext4, Minix, ReiserFS, Reiser4, Linux romfs, Linux
   cramfs, Linux squashfs, UFS (some variations), SysV FS (some
   variations), JFS, XFS, Amiga FS/FFS, Amiga SFS, Amiga PFS, BeOS BFS,
   QNX4 FS, UDF, 3DO CD-ROM file system, Veritas VxFS, Xbox DVD file
