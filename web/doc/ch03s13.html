@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>3.13. Disk Image Formats</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="disktype Documentation"><link rel="up" href="ch03.html" title="Chapter 3. Recognized Formats"><link rel="prev" href="ch03s12.html" title="3.12. Boot Loaders"><link rel="next" href="ch03s14.html" title="3.14. Archive Formats"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">3.13. Disk Image Formats</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch03s12.html">Prev</a> </td><th width="60%" align="center">Chapter 3. Recognized Formats</th><td width="20%" align="right"> <a accesskey="n" href="ch03s14.html">Next</a></td></tr></table><hr></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="id896266"></a>3.13. Disk Image Formats</h2></div></div></div><p>
+Disk images are used in many places and for many purposes:
+emulation, CD/DVD mastering, backup, disk duplication, and
+software distribution.
+Many image formats are just plain sector-by-sector copies of
+the disk's data, and <span><strong class="command">disktype</strong></span> can handle them without any
+special precautions. This section lists the formats that need
+special handling, because they omit unused space (creating a
+so-called <em class="firstterm">sparse</em> image), use compression,
+or have a special sector encoding.
+</p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id896292"></a>3.13.1. Raw CD Images</h3></div></div></div><p>
+The CD format has many layers. The uppermost layer provides 2048 byte
+sectors for storing computer data. Some CD mastering or duplication
+programs work one level below that (usually called "raw mode"), where
+a sector has 2352 bytes and includes the last level of error correction codes.
+The popular .bin/.cue CD image format often uses this raw-sector format.
+</p><p>
+<span><strong class="command">disktype</strong></span> recognizes the raw-sector format using the syncronization bytes
+and mode information at the start of each sector. It automatically
+extracts the 2048 actual data bytes from each sector for file
+system analysis. <span><strong class="command">disktype</strong></span> doesn't know or care about multiple
+tracks or sessions, but the current code seems to be sufficient
+even for (S)VCD disks.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="fmt_apple_images"></a>3.13.2. Apple Disk Images</h3></div></div></div><p>
+Apple has been using disk images for quite some time. Over that time,
+a wealth of different formats has accumulated. The manual page for the
+hdiutil(1) utility on Mac OS X lists the following:
+</p><pre class="screen">
+UDRW  UDIF read/write image
+UDRO  UDIF read-only image
+UDCO  UDIF ADC-compressed image
+UDZO  UDIF zlib-compressed image
+UDBZ  UDIF bzip2-compressed image (OS X 10.4+ only)
+UFBI  UDIF entire image with MD5 checksum
+UDRo  UDIF read-only (obsolete format)
+UDCo  UDIF compressed (obsolete format)
+UDTO  DVD/CD-R master for export
+UDxx  UDIF stub image
+UDSP  SPARSE (growable with content)
+RdWr  NDIF read/write image (deprecated)
+Rdxx  NDIF read-only image (deprecated, but still usable on OS 9 and OS X)
+ROCo  NDIF compressed image (deprecated)
+Rken  NDIF compressed (obsolete format)
+DC42  Disk Copy 4.2 image
+</pre><p>
+Unfortunately, Apple is very secretive and doesn't publish the format
+specifications. Apparently, they fear a degradation in user experience,
+were third parties allowed to write alternative utilities for handling
+disk images. Some older formats use proprietary compression algorithms,
+although the latest compressed format (UDZO) uses zlib.
+Mac OS X has a library (<code class="filename">DiskImages.framework</code>)
+that handles the various formats using a nice plug-in architecture,
+but it is marked private and neither headers nor documentation are available.
+</p><p>
+The "Disk Copy 4.2" format is the oldest one. It is quite straightforward
+(no sparse blocks, no compression) and Apple provides sample code to
+read it. However, the format is long obsolete and (to my knowledge) was
+only used for floppies.
+</p><p>
+The NDIF ("New Disk Image Format") format was introduced with Disk Copy 6.0.
+NDIF is a dual-fork format, meaning that all meta-data is stored in the
+resource fork. This makes them fragile for cross-system transport.
+Various variants of the format allow for sparse images (only actually used 
+sectors are present), compression, and self-mounting images.
+Some more information on the introduction of NDIF is available
+in <a href="http://www.tidbits.com/tb-issues/TidBITS-339.html" target="_top">TidBITS #339</a>.
+</p><p>
+Later, Apple introduced the UDIF format, which is basically the same
+as an NDIF, but in a robust single-fork format. Actually, it is simply
+the concatenation of the data fork, the resource fork,
+and a 512 byte header, without any padding.
+<span><strong class="command">disktype</strong></span> recognizes the magic of that header at the end of the file,
+but that's all it can do for now until the meta-data format is published.
+Detection may still work for the read-write and uncompressed read-only
+formats.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id896410"></a>3.13.3. Linux cloop Images</h3></div></div></div><p>
+The cloop format was designed for Linux Live CDs. A standard Linux file system
+is compressed in chunks, so that random read access is still possible without
+decompressing the whole image.
+</p><p>
+<span><strong class="command">disktype</strong></span> currently only recognizes the signature of the cloop image.
+The contents of the image are not made accessible; this would require that
+<span><strong class="command">disktype</strong></span> links with zlib.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id896441"></a>3.13.4. Virtual PC Disk Images</h3></div></div></div><p>
+The Virtual PC emulator / virtual machine has its own image format
+for the hard disks of the virtual PCs. There is a basic
+statically-sized format and a dynamic format that expands as
+data is written. Other types of disk images include differential
+images (for undoable drives), and pointers to existing disks or partitions.
+</p><p>
+I was able to deduce the format of the static and dynamic images
+from examples. <span><strong class="command">disktype</strong></span> recognizes them and properly analyzes
+the contents. The other formats are recognized, but cannot be analyzed
+further because they don't contain a complete image. To my knowledge,
+all versions of Virtual PC (Mac or Windows) starting with version 4
+use this image format.
+</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch03s12.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch03.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch03s14.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">3.12. Boot Loaders </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 3.14. Archive Formats</td></tr></table></div></body></html>

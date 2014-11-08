@@ -1,0 +1,1457 @@
+<chapter>
+<title>Recognized Formats</title>
+
+<para>
+This chapter lists the supported formats in some detail. Descriptions
+include background information, hints for interpreting the
+&disktype; output, and pointers to further information.
+</para>
+<para>
+The formats are grouped by platform or vendor for context.
+</para>
+
+
+
+<section>
+<title>Amiga</title>
+
+<para>
+The support for Amiga formats is mainly aimed at users of emulators.
+The .ADF disk image format used with most emulators is a plain dump of
+the disk, without special headers or compression. As such, &disktype;
+doesn't need special support to work with it. All Amiga formats
+originated on the 68K platform and thus use big-endian byte order.
+</para>
+<para>
+Broad information on Amiga file and disk formats can be found at
+<ulink url="http://perso.club-internet.fr/lclevy/amiga/formats.html"/>.
+The .ADF format FAQ is of particular interest, it is located at
+<ulink url="http://perso.club-internet.fr/lclevy/adflib/adf_info.html"/>.
+</para>
+
+<section>
+<title>The Amiga File System</title>
+<para>
+The Amiga file system comes in several variants, but is used the same
+on floppies and on hard disk partitions. All variants store a boot
+block at the very beginning of the disk and a root block in the
+middle. Apparently the boot block does not contain any actual pointers
+to the root block, so its position must be determined (well, more like
+guessed) from disk parameters like block size, block count, and
+cylinder boundaries.
+</para>
+<para>
+&disktype; only uses the boot block to
+recognize the format. It contains a signature and a flags field that
+determine the file system variant. There's the original file system
+(reported as "Amiga OFS file system"), and the later "fast" file
+system (reported as "Amiga FFS file system"). The "fast" file system
+has variants for better dealing with international characters (well,
+European accented characters as in ISO&nbsp;Latin&nbsp;1, that is), and a
+variant using a "directory cache".
+</para>
+<para>
+As mentioned, &disktype; is unable to locate
+the root block right now, and thus can't print any more information
+like volume name or size. It does, however, check the size of the file
+against standard floppy sizes and reports matches.
+</para>
+</section>
+
+<section>
+<title>The Professional File System</title>
+<para>
+All that is known about the "Professional File System" is its
+signature in the boot block.
+&disktype; reports it if found.
+</para>
+</section>
+
+<section>
+<title>The Rigid Disk Partitioning Scheme</title>
+<para>
+The so-called "Rigid Disk" partitioning scheme is used on hard disks
+and sometimes(?) on removable media like Zip disks. The Rigid Disk
+block can be located anywhere within the first 16 sectors of the
+disk. The structure itself is only 256 bytes in size and contains a
+pointer to a linked list of partition descriptors. Each of these is
+also 256 bytes in size, is located in a sector of its own somewhere on
+the disk, and contains a pointer to the next such descriptor.
+</para>
+<para>
+It is somewhat unclear how exactly sector sizes other than 512 bytes
+are to be handled. In lack of further data (or actually any test
+images at all), &disktype; assumes 512 byte
+sectors and warns if the Rigid Disk block says
+different. &disktype; prints the "drive name"
+of each partition. The partition descriptor also contains information
+about the file system contained in the partition, which is decoded and
+printed. The contents of the partition will be analyzed in any case.
+</para>
+</section>
+
+</section><!-- Amiga -->
+
+
+
+<section>
+<title>Apple Macintosh</title>
+
+<para>
+Macintosh formats originated on the 68K and PowerPC platforms and thus
+use big-endian byte order.
+Apple's mystic collection of disk image formats is discussed in
+<xref linkend="fmt_apple_images" />.
+</para>
+
+<section>
+<title>The Macintosh File System (MFS)</title>
+<para>
+This file system was used on the first Macs, using 400K floppies. It
+doesn't support folders (the Mac term for directories), just a flat set of
+files. The format was quickly replaced by the Hierarchical File
+System, which did support folders.
+</para>
+<para>
+&disktype; only recognizes the volume header
+signature of MFS.
+</para>
+</section>
+
+<section>
+<title>The Hierarchical File System (HFS)</title>
+<para>
+This file system was used on Macs for many years and for all media
+(floppies, hard disks, CD-ROMs). It has some special features, like
+the 4-character type and creator code remembered for each file, and
+dual-fork files, where the "data fork" stores application-specific
+data (like on other systems) and the "resource fork" stores additional
+information in a system-defined chunk format.
+</para>
+<para>
+The HFS superblock is stored 1024 bytes into the device, independent
+of sector size (which is assumed to be 512 bytes in general). The
+allocation block size is usually larger, from 4K to 32K. HFS uses
+B+-trees to store directory contents and file extents.
+</para>
+<para>
+HFS hit some limits with growing disk sizes (compare FAT16), and so
+the HFS+ format was designed as a replacement. HFS is still in
+widespread use, especially on interchange media, including disk images
+used for software distribution.
+</para>
+</section>
+
+<section>
+<title>The HFS Plus File System</title>
+<para>
+The HFS+ format was defined to improve shortcomings of HFS. It
+supports all the features of HFS, but also provides for POSIX file
+semantics and permissions. It is the primary file system for Mac
+OS&nbsp;X.  Classic Mac&nbsp;OS versions starting with 8.1 also support it.
+</para>
+<para>
+Like HFS, HFS+ has a superblock 1024 bytes into the device and uses
+B+-trees to store directory contents and file extents. The block size
+defaults to 4K.
+</para>
+<para>
+HFS+ volumes are often "wrapped" inside a dummy HFS volume. The dummy
+volume contains a ReadMe file, explaining the situation to the user of
+a pre-8.1 Mac&nbsp;OS release. It also contains a hidden System file,
+required for booting from a HFS+ volume on some machines. Special
+fields in the HFS volume header tell HFS+-aware systems where to find
+the actual volume.
+</para>
+<para>
+&disktype; recognizes both wrapped and non-wrapped HFS+ volumes. A
+wrapped volume will report accordingly, like in the following example:
+</para>
+<screen>
+--- hfs-plus-wrapped.image
+Regular file, size 8 MiB (8388608 bytes)
+HFS file system
+  Volume name "HFS Plus Wrapped"
+  Volume size 7.992 MiB (8380416 bytes, 2046 blocks of 4 KiB)
+HFS wrapper for HFS Plus
+  HFS Plus file system
+    Volume size 7.953 MiB (8339456 bytes, 2036 blocks of 4 KiB)
+    Volume name "HFS Plus Wrapped"
+</screen>
+<para>
+HFS+ stores the volume name in the directory data B-tree (the "catalog"),
+not in the volume header. While &disktype; makes some attempt to retrieve
+the name, it often fails on hard disks because the catalog is fragmented.
+It usually works on CDs and disk images, though.
+</para>
+</section>
+
+<section>
+<title>The Apple Partitioning Scheme</title>
+<para>
+Apple's partitioning scheme is quite pleasant since it is exclusively
+based on logical sector numbers. (This may have to do with Apple's
+early adoption of SCSI.) It seems to be fixed to a sector size of 512
+bytes, even on CDs.
+</para>
+<para>
+The partition map is stored using one sector per partition, starting
+at sector 1. Sector 0 is used for driver information. The partition
+map also contains an entry for itself, and entries for any free space
+between or after partitions. According to the spec, every sector of
+the disk must be accounted for in the map.
+</para>
+<para>
+The type of the partition is stored as a clear text string, using such
+names as "Apple_HFS" or "Apple_Free" (for unused space). There is no
+distrinction betweeen HFS and HFS+ here; see the blurb about wrapped
+HFS+ volumes above.
+</para>
+</section>
+
+</section><!-- Apple Macintosh -->
+
+
+
+<section>
+<title>ATARI ST</title>
+
+<para>
+The support for ATARI ST formats is mainly aimed at users of emulators.
+As far as I can tell, the .ST disk image format is a plain sector-by-sector
+image and requires no special support.
+</para>
+
+<section>
+<title>The GEMDOS File System</title>
+<para>
+The file system implemented by the GEMDOS layer of the TOS operating
+system is actually FAT12/FAT16 as defined by MS-DOS,
+see <xref linkend="fmt_fat" />.
+</para>
+<para>
+There are some slight differences. GEMDOS uses the "system identifier" field
+to store a serial number, used to detect floppy changing. For booting, a
+different branch instruction is used, and the boot sector must have a
+checksum of $1234 (computed from 16-bit words in big-endian byte order),
+instead of the $55AA marker. GEMDOS does not support
+arbitrary numbers of sectors per cluster and instead emulates larger sector
+sizes (1K, 2K, 4K) if it runs out of cluster numbers.
+&disktype; will report the boot checksum and the unusual sector sizes, if
+found. Otherwise, the volume will report as FAT12 or FAT16 as appropriate.
+</para>
+</section>
+
+<section>
+<title>The ATARI ST (AHDI) Partitioning Scheme</title>
+<para>
+The ATARI ST has its own parititioning scheme for hard disks, although it
+is structurally very similar to the PC partition table format. The first
+sector of the disk contains boot code as well as four partition entry slots.
+If more than four partitions are required, one of the four primary
+slots is used for an "extended" partition, which contains a linked list
+of partition map sectors using the same layout.
+</para>
+<para>
+Each partition has a type code of three characters, which &disktype;
+displays in plain. The three codes used by the AHDI hard disk driver
+are recognized.
+</para>
+</section>
+
+<!-- TODO: example hard disk image at http://hatari.sourceforge.net/download.html -->
+
+</section><!-- ATARI ST -->
+
+
+
+<section>
+<title>General PC Formats</title>
+
+<para>
+Although the PC-style partition tables were introduced by
+Microsoft(?), their universal adoption in the PC world would make it
+unfair to put them in the Microsoft section.
+</para>
+
+<section>
+<title>PC-style Partition Tables</title>
+<para>
+A PC-style partition table is stored in the very first sector of the
+disk, dubbed the Master Boot Record (MBR). It shares that sector with
+first-level boot code. As a result, the table only has four
+entries. The byte order is little-endian, as dictated by the x86
+platform.
+</para>
+<para>
+The beginning and end of each partition are stored both in
+three-dimensional coordinates (cylinder-head-sector) and as a logical
+block number. The actual geometry of the drive (number of cylinders,
+heads, and sectors) is not stored in the MBR. The three-dimensional
+format has hit size limits several times now. For some years, hard
+disks have lied about their geometry and re-mapped it internally, so
+that the values would fit the fields in the partition table. Today,
+even that won't do. &disktype; ignores the
+geometric fields and uses just the logical sector numbers.
+</para>
+<para>
+Each partition also carries a one-byte type number. Out of habit they
+are written in hexadecimal without a special prefix. 83 actually means
+$83, or 131 in decimal. &disktype; also
+displays a name for each partition type, using the same table as Linux
+fdisk.
+</para>
+<para>
+For situations where more than four partitions are required, so-called
+"extended" partitions were created. One partition entry in the MBR is
+used to point to the extended partition, which contains a linked list
+of partition map sectors using the same layout as the one in the
+MBR. Partitions defined inside an extended partition are called
+"logical" partitions, while the ones defined in the MBR are called
+"primary". The actual differences are slight and mostly affect booting
+DOS-based operating systems.
+</para>
+<para>
+More information on PC-style partition tables can be found at
+<ulink url="http://www.win.tue.nl/~aeb/partitions/partition_tables.html" />
+and
+<ulink url="http://www.win.tue.nl/~aeb/partitions/partition_types.html" />.
+</para>
+</section>
+
+<section>
+<title>EFI GPT Partition Table</title>
+<para>
+The Extensible Firmware Interface (EFI) is the designated successor to
+the PC BIOS firmware. It tries to get rid of as much legacy APIs and
+structures as possible, including the MBR partition table. The GUID
+Partition Table (GPT) is stored starting in sector 1 and typically
+allows for up to 128 partitions. It uses 64-bit LBA addressing, GUIDs to
+identify partitions and their format, and even allows for a clear-text
+name. The partition table is protected by a checksum and a backup is
+stored at the end of the device. Sector 0 is required to contain a
+MBR partition table with a single "protective" entry that covers the
+whole disk.
+</para>
+<para>
+More information on EFI can be found at
+<ulink url="http://www.uefi.org/" />
+and
+<ulink url="http://www.intel.com/technology/efi/" />.
+</para>
+</section>
+
+</section><!-- General PC Formats -->
+
+
+
+<section>
+<title>Linux File Systems</title>
+
+<para>
+Defining what actually is a "Linux" file system is difficult. Exchange
+between Unix flavors is vivid. Some of these file systems are borrowed
+from other flavors, others have been ported from Linux to other
+systems.
+</para>
+
+<section>
+<title>ext2 and ext3</title>
+<para>
+The ext2 file system is "the" native file system for Linux
+nowadays. There was a predecessor simply called "extended" file system,
+but support for it has long been eliminated from the Linux kernel.
+ext3 is a backwards-compatible extension that adds meta-data
+journalling.
+<!-- also available on the *BSDs (to check) -->
+</para>
+<para>
+ext2 is a fairly plain Unix file system, using an allocation bitmap
+and inodes. It has a superblock stored 1024 bytes into the device,
+independent of the block size used. All data is stored in
+little-endian byte order. The superblock contains some information
+not yet printed by &disktype;, including the
+originating operating system.
+</para>
+<para>
+Information on ext2 can be found at
+<ulink url="http://www.nongnu.org/ext2-doc/" />.
+Other sources are the home page of the ext2 tools at
+<ulink url="http://e2fsprogs.sourceforge.net/" />,
+and the Linux kernel source code (see <xref linkend="other_linux" />).
+</para>
+</section>
+
+<section>
+<title>ReiserFS</title>
+<para>
+ReiserFS was written with efficiency in mind.
+It handles large numbers of files per directory and large numbers
+of small files in general better than most traditional file systems.
+It makes extensive use of balanced trees and also provides meta-data
+journalling.
+</para>
+<para>
+There are two major versions of the on-disk format, 3.5 and 3.6.
+ReiserFS on Linux 2.2 only supports the 3.5 format.
+Linux 2.4 ships with ReiserFS in the mainstream kernel,
+supports both formats, and is able to upgrade a file system
+on the fly to the new format. The two formats use two different magic strings
+in the superblock. A third magic string is used for non-standard journal
+sizes. (It seems this feature was added only recently and isn't actually
+supported by the mainstream Linux kernel yet.)
+In this case, the format is determined by an additional field in the
+superblock.
+</para>
+<para>
+ReiserFS puts the superblock 64K into the device; some earlier versions
+put it 8K into the device. That allows complex boot loaders like GRUB
+<!-- TODO: check that, grub is quite big... -->
+to reside completely in the space before the actual file system.
+All data is stored in little-endian byte order.
+</para>
+<para>
+Information on ReiserFS can be found at
+<ulink url="http://www.namesys.com/" />.
+</para>
+</section>
+
+<section>
+<title>Reiser4</title>
+<para>
+Reiser4 is the successor to ReiserFS, further improving on some algorithms
+and data structures. Many aspects of Reiser4 are separate plug-ins and
+can be swapped. As a result, Reiser4 only stores a "master superblock"
+64K into the device that serves as an anchor to the rest of the file system,
+including the actual superblock. The default 4.0 format stores it in
+the following 4K block (i.e., 68K into the device).
+</para>
+</section>
+
+<section>
+<title>Minix</title>
+<para>
+As the name suggests, the Minix format didn't originate on Linux, but on
+Minix, the PC Unix system after which Linux was modelled in its early
+days. The format is quite simple and compact, and was the preferred
+format for boot and install floppies for some time. Today, it has
+been superceded by ext2, and support for it will likely be removed
+in the next stable Linux kernel series.
+<!-- TODO: check 2.6 for that... -->
+</para>
+<para>
+Minix puts the superblock 1K into the device. There are two versions of
+the volume structures (most notably the inodes), and two maximum
+lengths for file names (14 or 30 chars). These parameters can be combined,
+yielding four actual formats, each with its own magic. &disktype;
+assumes that Minix is always little-endian, but I wasn't able
+to really confirm this yet.
+</para>
+</section>
+
+<section>
+<title>romfs</title>
+<para>
+romfs is a read-only file system intended for boot disks, initial
+ramdisks and the like. It does not use compression. When used with
+initrd, it can be stored in compressed form on the boot medium and is
+decompressed in whole while loading it into the ramdisk. The code for
+romfs is quite small, which results from data structures optimized for
+the Linux kernel.
+</para>
+<!-- TODO: endianess? -->
+<para>
+Information on romfs can be found at
+<ulink url="http://romfs.sourceforge.net/" />.
+</para>
+</section>
+
+<section>
+<title>cramfs</title>
+<para>
+cramfs is a read-only file system intended for boot disks, initial
+ramdisks and the like. It improves on romfs by using compression
+within the file system. Decompression happens block by block as file
+data is accessed.
+</para>
+<para>
+cramfs uses the native byte order and page size of each architecture,
+but doesn't store these parameters in the
+superblock. &disktype; determines the byte
+order from the magic number field, but the page size can only be guessed at.
+The superblock can start at the beginning of the device,
+or after one unused sector of 512 bytes.
+</para>
+<para>
+Information on cramfs can be found at
+<ulink url="http://sourceforge.net/projects/cramfs/" />.
+</para>
+</section>
+
+<section>
+<title>squashfs</title>
+<para>
+squashfs is a read-only file system intended for boot disks, initial
+ramdisks and the like, currently under development. It tries to pack
+data really tight, without padding. A squashfs file system can occur
+with both byte orders, and the current Linux driver can use both,
+independent of the running architecture. The byte order can be
+determined from the magic number.
+</para>
+<para>
+Information on squashfs can be found at
+<ulink url="http://squashfs.sourceforge.net/" />.
+</para>
+</section>
+
+</section><!-- Linux File Systems -->
+
+
+
+<section>
+<title>Other Linux Formats</title>
+
+<para>
+For balance, this section lists formats used on Linux that don't
+qualify as file systems.
+</para>
+
+<section>
+<title>Linux Swap</title>
+<para>
+Linux swap partitions must be formatted before use, although the format
+is quite simple. It has just two purposes: Marking the partition as okay
+for swapping with a signature, and keeping a list of bad blocks. Both
+are kept in the very first block. The block size is the architecture's
+page size and can be 4K or 8K.
+</para>
+<para>
+There are two formats. The old one uses a bitmap in the first block to
+mark bad sectors, which limits it to around 128 MB on 4K-page architectures.
+Luckily, bad blocks are rare nowadays -- actually, most people won't
+touch a disk with even a single bad sector with a ten-feet pole.
+The new format uses a list of block numbers instead of a bitmap, thus lifting
+the size restriction.
+</para>
+<para>
+Note that the two formats are known under various names. Sometimes they are
+called version 0 and 1, sometimes version 1 and 2. Since the new format
+uses "SWAPSPACE2" as its signature, &disktype; uses 1 and 2. The page size
+is determined from the position of the signature; it's at the end of the
+first page-sized block. The endianness can only be determined for the
+new (version 2) format, using the sub-version number field.
+</para>
+</section>
+
+<section>
+<title>Linux LVM Physical Volumes</title>
+<para>
+The Logical Volume Manager (LVM) allows file systems to span several
+disks and to be resized online. This works by adding real disk
+partitions (called physical volumes) to a pool (called a volume
+group). Logical volumes can be allocated from the pool in units called
+physical extents, usually 4 MB in size. The necessary mapping
+information is stored at the beginning of each physical volume, where
+it can be detected.
+</para>
+<para>
+When &disktype; detects a LVM1 or LVM2 physical volume, it prints
+some details on the mapping, including the volume group name. The
+actual LVM mapping data is not interpreted at this time. Still,
+&disktype; attempts to detect any file system that happens to start
+on the first physical extent (LVM's allocation unit) of this physical
+volume.
+</para>
+</section>
+
+<section>
+<title>Linux RAID Physical Disks</title>
+<para>
+The Linux kernel includes a RAID layer implemented in software. It
+allows you to build a RAID array from commodity hardware. Recent
+revisions of Linux (i.e. 2.4.x) store all required information on the
+disks, enabling auto-detection at boot time. That feature is called
+"persistent superblocks".
+</para>
+<para>
+The RAID superblock is stored at the end of the partition, so
+&disktype; can only find it if the size of the partition is
+known. Actual data starts at the beginning of the device, so the file
+system on the RAID may be detected as well if you hit the first disk
+of the set.
+</para>
+</section>
+
+<section>
+<title>Debian Split Floppy</title>
+<para>
+The installation system of Debian GNU/Linux splits large files (like
+the driver module .tar.gz) over several floppies. A special header
+is put in the boot sector to allow identification of the disks.
+</para>
+</section>
+
+</section><!-- Other Linux Formats -->
+
+
+
+<section>
+<title>Microsoft</title>
+
+<para>
+Microsoft's formats are quite a phenomenon. Despite obvious mis-design
+-- missing unique identification signatures and the need for excessive
+calculations, for example -- the FAT formats have established
+themselves as standards for cross-system interchange.
+</para>
+<para>
+All formats described in this section originated on the x86 platform
+and are little-endian.
+</para>
+
+<section id="fmt_fat">
+<title>FAT12, FAT16, and FAT32</title>
+<para>
+This family of formats has a long history. They were introduced by
+MS-DOS and are still supported and used today in all versions of MS
+Windows. The format also managed to establish itself as the common
+denominator for disk interchange, and as a result is supported by
+virtually every operating system on the planet.
+</para>
+<para>
+FAT stands for File Allocation Table, a central structure in
+the file system. It acts as an allocation bitmap, but also stores
+which clusters belong to a certain file using linked lists. As the
+names indicate, there are variants with entry sizes of 12, 16 and 32
+bits.
+</para>
+<para>
+One unique feature of the FAT file systems is that they are hard to
+identify. The first sector is called the "boot sector". It contains
+some parameters at the beginning; the rest of the sector is used for
+boot code. Identification is only possible through consistency checks
+of these parameters. Since the format is quite flexible,
+&disktype; only uses some of these as "hard"
+tests, and uses the rest to calculate a "hints score". For example,
+there is a two-byte signature at the end of the boot sector that is
+used by PC BIOSes to check for a bootable disk. It is entirely
+possible to encounter an otherwise valid FAT file system in the wild
+that lacks this signature, though.
+</para>
+<para>
+To make the situation even worse, some other PC formats, including
+Microsoft's own NTFS, seem to use the same parameter block in the boot
+sector, for compatibility with PC
+BIOSes. &disktype; tries to avoid it, but it
+may still misidentify one of these as a FAT file system. Hopefully the
+"hints score" will help you identify such situations.
+</para>
+<para>
+Official information on the FAT family can be found at
+<ulink url="http://www.microsoft.com/hwdev/hardware/fatgendown.asp" />.
+</para>
+</section>
+
+<section>
+<title>NTFS</title>
+<para>
+NTFS is the file system used by Microsoft in the Windows NT range of
+operating systems (Windows NT, Windows 2000, Windows XP). It is much
+better designed than FAT was, and supports features like extended
+attributes and n-fork files.
+</para>
+<para>
+&disktype; uses a signature in the "system
+identifier" field of the boot sector to identify NTFS. I can only hope
+this really is a signature and not just a coincidence that no one
+cared to change over the years. &disktype;
+also checks some other parameters in the boot sector, but those are
+shared with the FAT file system family...
+</para>
+<para>
+Some information on NTFS is available from the Linux-NTFS project at
+<ulink url="http://linux-ntfs.sourceforge.net/" />.
+</para>
+</section>
+
+</section><!-- Microsoft -->
+
+
+
+<section>
+<title>IBM</title>
+
+<para>
+This section lists formats that originated at IBM.
+</para>
+
+<section>
+<title>HPFS</title>
+<para>
+HPFS, the High Performance File System, was introduced in OS/2 as an
+alternative to FAT. It's design is quite clean, and has an eye on
+performance. There is also support for extended attributes, apparently
+used by OS/2's graphical shell, the Workspace Manager.
+</para>
+<para>
+HPFS preserves the DOS boot sector in sector 0 and puts its own superblocks
+into sectors 16 and 17 (that is, 8K into the device). The space in between
+is used for boot code. All structures in HPFS are clearly marked with
+magic numbers.
+</para>
+</section>
+
+<section>
+<title>JFS</title>
+<para>
+The JFS file system was originally created for AIX, IBM's flavor of Unix.
+It was later made more portable and was released with OS/2 Warp.
+IBM also ported it to Linux and released it under the GPL.
+The main feature of JFS is meta-data journaling.
+</para>
+<para>
+JFS puts its superblock 32K into the device. It uses extents, inodes,
+and B+ trees.
+</para>
+<para>
+Information on JFS (at least the open-sourced Linux implementation)
+can be found at
+<ulink url="http://oss.software.ibm.com/jfs/" />.
+</para>
+</section>
+
+</section><!-- IBM -->
+
+
+
+<section>
+<title>Other Unix Flavors</title>
+
+<para>
+This section is something of a catch-all. Some file systems that originated
+on commercial Unix flavors were already described (IBM's JFS, for example).
+Then, there are the "generic" formats that originated from System V and BSD,
+and were adopted and adapted by commercial vendors as well as
+free projects.
+</para>
+
+<section>
+<title>UFS</title>
+<para>
+UFS originated from BSD, and is used in various Unix flavors
+including Sun Solaris and NextStep / Mac&nbsp;OS&nbsp;X.
+</para>
+<para>
+The different variations use block sizes of 512, 1024, or 2048 bytes,
+the latter one intended for CD media. The superblock is located
+some way into the device; &disktype; only checks at 8K at this time.
+There are four different magic numbers for different revisions of the
+structures. The file system can be little-endian or big-endian,
+depending on the architecture of the vendor.
+</para>
+</section>
+
+<section>
+<title>BSD Disklabels</title>
+<para>
+A BSD disklabel is a partition map with some special quirks.
+While it was originally designed to cover a whole disk,
+PC-based BSD flavors usually put it inside a DOS partition
+(which they call slices to set them apart from the partitions
+defined by the disklabel).
+</para>
+<para>
+There are 8 partition slots in a basic BSD disklabel, but not
+all of them are created equal. The slots are labeled with letters,
+starting with <filename>a</filename>. The first four have special
+meaning by convention. The <filename>a</filename> partition contains
+the root file system. It also contains the disklabel itself, which
+is possible since the UFS superblock only starts at 8K into
+the partition. The <filename>b</filename> partition is used for
+swap space. The <filename>c</filename> partition slot refers to the whole
+disk (or slice, if applicable), but has the type set to Unused (0).
+Finally, the <filename>d</filename> partition slot is completely unused.
+The remaining slots are used for additional file systems, e.g.
+<filename>/usr</filename> or <filename>/var</filename>.
+</para>
+<para>
+One more quirk is that the disklabel uses absolute sector numbers,
+even if it lives inside a DOS slice. As if that wan't enough, FreeBSD
+adjusts that data on the fly if you access the device file for
+the slice. &disktype; tries to adapt to all situations by finding
+the lowest sector number used in the label.
+</para>
+<para>
+&disktype; recognizes BSD disklabels by their magic number.
+Partitions that overlap with the disklabel itself are reported and
+analyzed in the right context. The data for the <filename>c</filename>
+partition is always reported, even if marked as unused.
+</para>
+<para>
+At this time &disktype; only probes the beginning of the second sector
+and assumes a sector size of 512 bytes. Apparently, the placement
+of the disklabel is different on certain architectures. I would
+appreciate any additional information on this.
+</para>
+</section>
+
+<section>
+<title>System V FS</title>
+<para>
+Like UFS, the System V file system originated in one of the
+"original" Unix strains and was adopted by many commercial flavors
+built on that code. The Linux kernel supports quite a few variants,
+including two with PDP-11 byte order. Unfortunately, some don't have
+a magic and thus can't be detected reliably. &disktype;
+supports the Xenix and the System V R2 and R4 variants.
+</para>
+<para>
+Information on System V file systems can be found at
+<ulink url="http://www.knm.org.pl/prezes/sysv.html" />, the page for
+the Linux driver.
+</para>
+</section>
+
+<section>
+<title>XFS</title>
+<para>
+XFS is SGI's high-performance file system, originally developed for IRIX.
+Like JFS, it has been open-sourced and ported to Linux.
+XFS does meta-data journalling, and even has optional real-time features.
+</para>
+<para>
+Unlike most Unix file systems, XFS puts the superblock at the very
+beginning of the device. All data is stored in big-endian byte order.
+</para>
+<para>
+Information on the Linux port of XFS can be found at
+<ulink url="http://oss.sgi.com/projects/xfs/" />.
+</para>
+</section>
+
+<section>
+<title>Solaris SPARC Disklabel</title>
+<para>
+Solaris SPARC uses a disklabel in the BSD fashion.
+Unfortunately, I wasn't able to gather much information about it
+beyond the actual on-disk structure.
+</para>
+<para>
+&disktype; detects the Solaris SPARC disklabel by its magic number.
+As usual, all partitions are listed and analyzed recursively.
+</para>
+</section>
+
+<section>
+<title>Solaris x86 Disklabel</title>
+<para>
+Solaris x86 (or "Intel Platform Edition") uses a scheme similar to
+the PC BSDs. A single PC-style partition is set aside for Solaris,
+which is then sub-partitioned using a proprietary partitioning scheme.
+The scheme used in Solaris is known as VTOC. Like the BSD disklabel,
+it has a fixed number of slots, and some of them are
+allocated to fixed special purposes, like the root file system or
+the swap partition. There is also one entry that covers the whole
+PC-style partition, it is dubbed "overlap".
+</para>
+<para>
+&disktype; detects the Solaris x86 disklabel by its magic number.
+As usual, all partitions are listed and analyzed recursively.
+</para>
+</section>
+
+</section><!-- Other Unix -->
+
+
+
+<section>
+<title>Miscellaneous Systems</title>
+
+<section>
+<title>BeOS BFS</title>
+<para>
+BeOS was an attempt to build a new desktop operating system with
+SMP, multi-threading, and multimedia built in from the beginning.
+Originally, Be Inc. had their own PowerPC-based hardware. The system
+was later ported to Apple PowerMac hardware and x86 PCs.
+The BFS file system used natively by BeOS supports some
+interesting techniques, for instance search query results
+are updated live as changes are made to the file system.
+</para>
+<para>
+The BFS superblock is 512 bytes in size and originally was placed
+right at the beginning of the partition. For the x86 version, it had
+to be moved to the second sector to make room for boot code. The file
+system uses each platform's native byte order.
+</para>
+</section>
+
+<section>
+<title>QNX RTOS</title>
+<para>
+QNX RTOS is a POSIX-compatible real-time operating system based on a
+micro-kernel. Its current file system was dubbed QNX4 probably because
+it appeared in that version of the OS. It is unique in that it has no
+real superblock, just four inode structures describing the root
+directory, the inode file, and two alternative boot codes. This
+"superblock" is located in the second sector, i.e. 512 bytes into
+the device.
+</para>
+<para>
+The "magic value" &disktype; looks for is actually the string "/",
+the file name of the root directory. At this time, only the basic
+signature check is done.
+</para>
+</section>
+
+<section>
+<title>Veritas VxFS</title>
+<para>
+...
+</para>
+</section>
+
+</section><!-- Miscellaneous Systems -->
+
+
+<section>
+<title>CD File Systems</title>
+
+<para>
+This section describes system-independent file systems for use on CDs.
+Many vendors just use their platform's native format for bootable CDs.
+It is also possible to put two file systems on a CD without partitioning;
+see "Hybrid PC/Macintosh CDs" below.
+</para>
+
+<section>
+<title>ISO9660</title>
+<para>
+The ISO9660 file system is a system-independent file system for
+read-only data CDs. It is named after the ISO standard that defines it.
+Drafts of the standard were known as "High Sierra".
+</para>
+<para>
+The base standard defines three levels of compliance. Level 1 limits
+file names to MS-DOS conventions -- 8 chars for the name, 3 chars
+for the extension. Levels 2 and 3 allow up to 31 characters.
+In practice however, most CDs use Level 1 plus one of the various
+extensions (covered in the following sections).
+That way, MS-DOS gets file names it can handle, and most
+other systems get the full file names from the extension records.
+</para>
+<para>
+ISO9660 puts its first superblock 32K into the device, i.e. in sector 16.
+(CDs always have 2K sectors.) That allows it to co-exist with certain
+native file systems or partition tables. ISO9660 actually uses a list
+of superblocks, or "Volume Descriptors", with different roles.
+The "Primary" volume descriptor, which must be present and first on
+all volumes, uses type 1.
+</para>
+<para>
+While ISO does not post its standards for free,
+<ulink url="http://www.ecma-international.org/">ECMA</ulink>
+republishes important ISO standards free for anyone.
+ISO&nbsp;9660 is available as ECMA&nbsp;119 at
+<ulink url="http://www.ecma-international.org/publications/files/ecma-st/Ecma-119.pdf" />.
+</para>
+</section>
+
+<section>
+<title>The Joliet Extension</title>
+<para>
+The Joliet extension is favored in the MS&nbsp;Windows world. It allows
+Unicode characters to be used for all text fields, which includes
+file names and the volume name. A "Secondary" volume descriptor with
+type 2 contains the same information as the Primary one, but in
+16-bit encoded Unicode. As a result of this, the volume name is limited
+to 16 characters.
+</para>
+<para>
+&disktype; prints the Unicode volume name from the Joliet volume descriptor
+if present.
+</para>
+</section>
+
+<section>
+<title>The RockRidge Extension</title>
+<para>
+The RockRidge extension is favored in the Unix world. It lifts file name
+restrictions, but also allows Unix-style permissions and special files
+to be stored on the CD.
+</para>
+<para>
+Since RockRidge does not affect the volume descriptors, &disktype;
+does not detect or report it.
+</para>
+</section>
+
+<section id="fmt_hybrid">
+<title>Hybrid PC/Macintosh CDs</title>
+<para>
+Apple has its own set of ISO9660 extensions to store Mac&nbsp;OS metadata
+for files, but they are seldom used. Instead, a full HFS or HFS&nbsp;Plus
+file system is put on the CD together with an ISO9660 file system.
+This works well, since both file systems are flexible in placing their
+data structures, and the (fixed-position) superblocks don't overlap.
+Some mastering programs use an Apple-style partition table with a single entry,
+for no reason in particular.
+File data can be shared between both file systems simply by pointing at
+the same blocks in the appropriate structures.
+</para>
+<para>
+Hybrid CDs contain two valid file systems, and &disktype; will
+report them as such.
+</para>
+</section>
+
+<section>
+<title>The El Torito Boot Specification</title>
+<para>
+The El Torito standard defines a flexible format to store boot code
+on ISO9660 file systems. It is implemented on most PCs today.
+A volume descriptor with type 0 (actually called a "Boot Record")
+points to another sector containing the actual "boot catalog".
+That catalog lists a default boot image, plus an optional list of
+boot images for specific hardware.
+</para>
+<para>
+A boot image can be an image of a floppy disk (1.2, 1.44, or 2.88 MB),
+which will be loaded into RAM by the BIOS and used to emulate a
+bootable floppy. Hard disk emulation works likewise, but is not as useful.
+Finally, a boot image can be 'non-emulated', i.e. just a piece of boot
+code that knows how to access the CD without emulation. Whether the
+boot image is also available as a file on the CD is up to the CD mastering
+software.
+</para>
+<para>
+&disktype; will report the kind and parameters of all boot images found.
+Their contents are analyzed for file systems and boot code in the usual way.
+</para>
+</section>
+
+<section>
+<title>UDF</title>
+<para>
+UDF (Universal Disk Format) is a new cross-platform file format for CDs.
+It offers the capability to create the file system incrementally on
+write-once (i.e. CD-R) and read-write (i.e. CD-RW) media. That allows
+users to use standard file manager operations to create a disk
+(instead of specialized CD mastering programs).
+UDF is designed to co-exist with an ISO9660 structure,
+and most UDF implementations write both structures (for the same
+set of files) by default.
+The DVD-Video and DVD-Audio formats are based on UDF.
+</para>
+<para>
+&disktype; supports UDF and reports all interesting information it finds.
+However, it may not detect some exotic variations. One reason for this is
+that the sector size is variable, but must be guessed -- the
+"anchor volume descriptor" is located at sector 256, not at a certain
+byte offset.
+Most UDF disks also carry an ISO9660 file system, which is detected and
+reported separately.
+</para>
+<para>
+As for standards, UDF is a bit complicated.
+Actual UDF standards are issued by the
+Optical Storage Technology Association (OSTA) and can be downloaded from
+<ulink url="http://www.osta.org/specs/" />. There are several versions
+of the specification, and for example DVD-Video disks must conform to
+version 1.02.
+The OSTA documents are not complete standards, but list additional
+restrictions and extensions to the base standard,
+ISO&nbsp;13346 a.k.a. ECMA&nbsp;167 (available at 
+<ulink url="http://www.ecma-international.org/publications/files/ecma-st/Ecma-167.pdf" />).
+</para>
+<para>
+There is also another standard, ECMA&nbsp;168 a.k.a. ISO&nbsp;13490
+(available at
+<ulink url="http://www.ecma-international.org/publications/files/ecma-st/Ecma-168.pdf" />),
+that claims to be an improved (and partially incompatible) version of
+ISO&nbsp;9660 a.k.a. ECMA&nbsp;119. It is still designed for read-only
+and write-once media, but now shares some elements with
+ISO&nbsp;13346 a.k.a. ECMA&nbsp;167 (i.e. UDF).
+I have yet to find out what relevance it has in practice, if any.
+</para>
+</section>
+
+<section>
+<title>Sega Dreamcast</title>
+<para>
+The Sega Dreamcast game console uses a special physical format called
+GD-ROM (?),
+but a standard ISO 9660 file system on top of that.
+There is an additional signature at the start of the first sector,
+which is detected by &disktype;. It is unclear if this is part of
+boot code of just a general signature.
+</para>
+</section>
+
+<section>
+<title>Xbox DVD file system</title>
+<para>
+The Microsoft Xbox game console uses a special file system for DVDs,
+which &disktype; tries to recognize.
+</para>
+</section>
+
+<section>
+<title>3DO file system</title>
+<para>
+The 3DO game console system (?) uses standard Mode&nbsp;1 CD-ROM disks,
+but with a custom file system. The signature in the first sector is detected
+by &disktype;.
+</para>
+</section>
+
+</section><!-- CD File Systems -->
+
+
+
+<section>
+<title>Boot Loaders</title>
+
+<para>
+For PC / BIOS booting, the first sector of a hard disk partition or
+floppy disk contains boot code that is responsible for loading the
+operating system. Since 512 bytes are usually not sufficient for that,
+the (so-called) boot sector will only contain a first-stage loader
+that uses simple mechanisms to load a larger, second-stage loader.
+Since it is useful to know if a disk is bootable or not, &disktype;
+tries to detect these first-stage boot loaders.
+</para>
+<para>
+These first-stage boot loaders are also found in El Torito boot images
+on CDs when floppy emulation is used. More recent CD loaders use
+non-emulated mode and thus don't have to fit into 512 bytes. They are
+typically 2K in size and can locate the OS kernel or the secand-stage
+loader by reading the actual ISO9660 file system.
+</para>
+<para>
+&disktype; can identify a range of common boot loaders using clear
+text signatures in the boot sector. This currently includes the
+Linux loaders LILO, GRUB, SYSLINUX, and ISOLINUX, plus the
+original boot loader still built into each i386 Linux kernel.
+(Note that GRUB is not Linux-specific and is also used for other
+operating systems, Solaris x86 for instance.)
+Various boot loaders from FreeBSD, MS-DOS / Windows, and the BeOS
+family are recognized as well.
+</para>
+
+<section>
+<title>GRUB</title>
+<para>
+For GRUB, &disktype; tries to determine the compatibility version code.
+Detection works starting with version 2.0. Older versions have no
+clear signature to scan for, but that doesn't matter much since they're
+ancient anyway.
+</para>
+<para>
+Note that &disktype; only looks at the boot sector, which contains
+just the <filename>stage1</filename> loader. The
+<filename>stage2</filename> is usually located inside a file system.
+Sometimes, a filesystem-aware
+<filename>stage1_5</filename> is used and put in a boot area
+at the start of a file system; &disktype; does not detect this yet.
+</para>
+</section>
+
+<section>
+<title>FreeBSD</title>
+<para>
+The native FreeBSD i386 loader has several stages that are placed in special
+areas of the disk. The first one, <filename>boot0</filename>, is actually
+a boot manager for the MBR, not a loader. It allows the user to choose the
+partition to boot. The second piece, <filename>boot1</filename>, is
+placed in the boot sector of the DOS partition (slice), i.e. before
+the BSD disklabel. It loads the next stage and runs it. The third
+piece, <filename>boot2</filename>, is more sophisticated. It loads
+the final kernel loader from a file in the root file system.
+<filename>boot2</filename> itself just fits in the 7K of space between
+the disklabel and the UFS superblock, i.e. sectors 2 to 15.
+</para>
+<para>
+&disktype; recognizes the three stages described above by their
+signatures. There are some more stages in the FreeBSD boot process,
+but they are outside of the scope of &disktype;.
+</para>
+</section>
+
+<section>
+<title>Windows and MS-DOS</title>
+<para>
+Boot loaders for Windows NT derivatives are recognized by scanning
+for "NTLDR". Boot loaders for non-NT Windows versions and MS-DOS
+are recognized by the "MSDOS&nbsp;&nbsp;&nbsp;SYS" string.
+</para>
+</section>
+
+<section>
+<title>BeOS and derivatives</title>
+<para>
+&disktype; recognizes the boot loader from BeOS x86, and the updated
+version used by yellowTab in ZETA. Haiku (formerly FreeBeOS) uses a
+different loader which is also recognized.
+</para>
+</section>
+
+</section><!-- Boot Loaders -->
+
+
+
+<section>
+<title>Disk Image Formats</title>
+
+<para>
+Disk images are used in many places and for many purposes:
+emulation, CD/DVD mastering, backup, disk duplication, and
+software distribution.
+Many image formats are just plain sector-by-sector copies of
+the disk's data, and &disktype; can handle them without any
+special precautions. This section lists the formats that need
+special handling, because they omit unused space (creating a
+so-called <firstterm>sparse</firstterm> image), use compression,
+or have a special sector encoding.
+</para>
+
+<section>
+<title>Raw CD Images</title>
+<para>
+The CD format has many layers. The uppermost layer provides 2048 byte
+sectors for storing computer data. Some CD mastering or duplication
+programs work one level below that (usually called "raw mode"), where
+a sector has 2352 bytes and includes the last level of error correction codes.
+The popular .bin/.cue CD image format often uses this raw-sector format.
+</para>
+<para>
+&disktype; recognizes the raw-sector format using the syncronization bytes
+and mode information at the start of each sector. It automatically
+extracts the 2048 actual data bytes from each sector for file
+system analysis. &disktype; doesn't know or care about multiple
+tracks or sessions, but the current code seems to be sufficient
+even for (S)VCD disks.
+</para>
+</section>
+
+<section id="fmt_apple_images">
+<title>Apple Disk Images</title>
+<para>
+Apple has been using disk images for quite some time. Over that time,
+a wealth of different formats has accumulated. The manual page for the
+hdiutil(1) utility on Mac&nbsp;OS&nbsp;X lists the following:
+</para>
+<screen>
+UDRW  UDIF read/write image
+UDRO  UDIF read-only image
+UDCO  UDIF ADC-compressed image
+UDZO  UDIF zlib-compressed image
+UDBZ  UDIF bzip2-compressed image (OS X 10.4+ only)
+UFBI  UDIF entire image with MD5 checksum
+UDRo  UDIF read-only (obsolete format)
+UDCo  UDIF compressed (obsolete format)
+UDTO  DVD/CD-R master for export
+UDxx  UDIF stub image
+UDSP  SPARSE (growable with content)
+RdWr  NDIF read/write image (deprecated)
+Rdxx  NDIF read-only image (deprecated, but still usable on OS 9 and OS X)
+ROCo  NDIF compressed image (deprecated)
+Rken  NDIF compressed (obsolete format)
+DC42  Disk Copy 4.2 image
+</screen>
+<para>
+Unfortunately, Apple is very secretive and doesn't publish the format
+specifications. Apparently, they fear a degradation in user experience,
+were third parties allowed to write alternative utilities for handling
+disk images. Some older formats use proprietary compression algorithms,
+although the latest compressed format (UDZO) uses zlib.
+Mac&nbsp;OS&nbsp;X has a library (<filename>DiskImages.framework</filename>)
+that handles the various formats using a nice plug-in architecture,
+but it is marked private and neither headers nor documentation are available.
+</para>
+<para>
+The "Disk Copy 4.2" format is the oldest one. It is quite straightforward
+(no sparse blocks, no compression) and Apple provides sample code to
+read it. However, the format is long obsolete and (to my knowledge) was
+only used for floppies.
+</para>
+<para>
+The NDIF ("New Disk Image Format") format was introduced with Disk Copy 6.0.
+NDIF is a dual-fork format, meaning that all meta-data is stored in the
+resource fork. This makes them fragile for cross-system transport.
+Various variants of the format allow for sparse images (only actually used 
+sectors are present), compression, and self-mounting images.
+Some more information on the introduction of NDIF is available
+in <ulink url="http://www.tidbits.com/tb-issues/TidBITS-339.html">TidBITS #339</ulink>.
+</para>
+<para>
+Later, Apple introduced the UDIF format, which is basically the same
+as an NDIF, but in a robust single-fork format. Actually, it is simply
+the concatenation of the data fork, the resource fork,
+and a 512 byte header, without any padding.
+&disktype; recognizes the magic of that header at the end of the file,
+but that's all it can do for now until the meta-data format is published.
+Detection may still work for the read-write and uncompressed read-only
+formats.
+</para>
+</section>
+
+<section>
+<title>Linux cloop Images</title>
+<para>
+The cloop format was designed for Linux Live CDs. A standard Linux file system
+is compressed in chunks, so that random read access is still possible without
+decompressing the whole image.
+</para>
+<para>
+&disktype; currently only recognizes the signature of the cloop image.
+The contents of the image are not made accessible; this would require that
+&disktype; links with zlib.
+</para>
+</section>
+
+<section>
+<title>Virtual PC Disk Images</title>
+<para>
+The Virtual PC emulator / virtual machine has its own image format
+for the hard disks of the virtual PCs. There is a basic
+statically-sized format and a dynamic format that expands as
+data is written. Other types of disk images include differential
+images (for undoable drives), and pointers to existing disks or partitions.
+</para>
+<para>
+I was able to deduce the format of the static and dynamic images
+from examples. &disktype; recognizes them and properly analyzes
+the contents. The other formats are recognized, but cannot be analyzed
+further because they don't contain a complete image. To my knowledge,
+all versions of Virtual PC (Mac or Windows) starting with version 4
+use this image format.
+</para>
+</section>
+
+</section><!-- Disk Image Formats -->
+
+
+
+<section>
+<title>Archive Formats</title>
+
+<para>
+&disktype; detects selected archive formats,
+because they can occur on Linux installation disks, but also on backup
+tapes.
+</para>
+
+<section>
+<title>tar</title>
+<para>
+The tar (tape archive) format as originally created for backup
+to magnetic tape. Today, it is <emphasis>the</emphasis> Unix
+archive format and is widely used for software distribution as well
+as backup. It conserves all Unix file system specialties, including
+permissions and hard links. tar by itself does not include compression
+ans is not exactly space-efficient. Therefore it is usually combined
+with a file compressor like gzip, compress, or bzip2.
+</para>
+<para>
+Several variations of the format exist. &disktype; identifies the base
+format using the checksum of the first header, then looks for
+signatures to identify the GNU and POSIX flavors. The code to do this
+was contributed by Doug Merritt.
+</para>
+</section>
+
+<section>
+<title>cpio</title>
+<para>
+cpio is another Unix archive format, originally created for backup purposes.
+Some variations use binary headers, while others encode numbers as ASCII.
+&disktype; should recognize most of these variations.
+</para>
+</section>
+
+<section>
+<title>dump/restore</title>
+<para>
+The dump and restore commands are used to back up a file system at
+a very low level, but short of a sector-by-sector copy. The data
+is very file system specific and in general can only be used by
+the same operating system and the same file system driver.
+&disktype; tries to identify some formats by their magic number.
+</para>
+</section>
+
+<section>
+<title>bar</title>
+<para>
+To be honest, I don't know anything about this format, other than it
+is an archive format. The signature check was contributed by Doug Merritt.
+</para>
+</section>
+
+</section><!-- Archive Formats -->
+
+
+
+<section>
+<title>Compression Formats</title>
+
+<para>
+File compression formats are supported because they can occur on Linux
+installation disks and ramdisks, but also for convenience. The test
+images in the file system sampler are gzip-compressed for storage.
+</para>
+<para>
+When &disktype; identifies compressed data,
+it spawns an external decompressor programs and analyzes the
+decompressed data. Compressed data may start at a sector (i.e. 512
+byte) boundary up to 4096 bytes into the disk or partition. This is
+especially useful for installation disks.
+</para>
+
+<section>
+<title>compress</title>
+<para>
+The traditional Unix compress format uses the moderately efficient (by
+today's standards) LZW algorithm. It can be
+identified by a two-byte magic signature. Decompression is done using
+the external <filename>gzip</filename> program.
+</para>
+</section>
+
+<section>
+<title>gzip</title>
+<para>
+The gzip format uses a LZ77 derivative with adaptive Huffmann
+compression. It is both reasonably compact and reasonably fast, and
+used in many places. Amongst them are the ZIP archive format, the zlib
+compression library, and the cramfs and squashfs file systems. The
+Linux kernel natively supports gzip compression for initial ramdisks.
+</para>
+<para>
+The gzip file format can be identified by a two-byte magic signature.
+Decompression is done using the external <filename>gzip</filename>
+program.
+</para>
+</section>
+
+<section>
+<title>bzip2</title>
+<para>
+The bzip2 format uses the Burrows-Wheeler transform, a relatively
+recent compression algorithm. It is more efficient than gzip, but
+takes a lot of memory and time to decompress. It is supported in
+&disktype; more for the sake of completeness.
+</para>
+<para>
+The file format can be identified by a two-byte magic signature.
+Decompression is done using the external <filename>bzip2</filename>
+program.
+</para>
+</section>
+
+</section><!-- Compression Formats -->
+
+
+
+</chapter>

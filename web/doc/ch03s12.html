@@ -1,0 +1,60 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>3.12. Boot Loaders</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="disktype Documentation"><link rel="up" href="ch03.html" title="Chapter 3. Recognized Formats"><link rel="prev" href="ch03s11.html" title="3.11. CD File Systems"><link rel="next" href="ch03s13.html" title="3.13. Disk Image Formats"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">3.12. Boot Loaders</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch03s11.html">Prev</a> </td><th width="60%" align="center">Chapter 3. Recognized Formats</th><td width="20%" align="right"> <a accesskey="n" href="ch03s13.html">Next</a></td></tr></table><hr></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="id896069"></a>3.12. Boot Loaders</h2></div></div></div><p>
+For PC / BIOS booting, the first sector of a hard disk partition or
+floppy disk contains boot code that is responsible for loading the
+operating system. Since 512 bytes are usually not sufficient for that,
+the (so-called) boot sector will only contain a first-stage loader
+that uses simple mechanisms to load a larger, second-stage loader.
+Since it is useful to know if a disk is bootable or not, <span><strong class="command">disktype</strong></span>
+tries to detect these first-stage boot loaders.
+</p><p>
+These first-stage boot loaders are also found in El Torito boot images
+on CDs when floppy emulation is used. More recent CD loaders use
+non-emulated mode and thus don't have to fit into 512 bytes. They are
+typically 2K in size and can locate the OS kernel or the secand-stage
+loader by reading the actual ISO9660 file system.
+</p><p>
+<span><strong class="command">disktype</strong></span> can identify a range of common boot loaders using clear
+text signatures in the boot sector. This currently includes the
+Linux loaders LILO, GRUB, SYSLINUX, and ISOLINUX, plus the
+original boot loader still built into each i386 Linux kernel.
+(Note that GRUB is not Linux-specific and is also used for other
+operating systems, Solaris x86 for instance.)
+Various boot loaders from FreeBSD, MS-DOS / Windows, and the BeOS
+family are recognized as well.
+</p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id896117"></a>3.12.1. GRUB</h3></div></div></div><p>
+For GRUB, <span><strong class="command">disktype</strong></span> tries to determine the compatibility version code.
+Detection works starting with version 2.0. Older versions have no
+clear signature to scan for, but that doesn't matter much since they're
+ancient anyway.
+</p><p>
+Note that <span><strong class="command">disktype</strong></span> only looks at the boot sector, which contains
+just the <code class="filename">stage1</code> loader. The
+<code class="filename">stage2</code> is usually located inside a file system.
+Sometimes, a filesystem-aware
+<code class="filename">stage1_5</code> is used and put in a boot area
+at the start of a file system; <span><strong class="command">disktype</strong></span> does not detect this yet.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id896171"></a>3.12.2. FreeBSD</h3></div></div></div><p>
+The native FreeBSD i386 loader has several stages that are placed in special
+areas of the disk. The first one, <code class="filename">boot0</code>, is actually
+a boot manager for the MBR, not a loader. It allows the user to choose the
+partition to boot. The second piece, <code class="filename">boot1</code>, is
+placed in the boot sector of the DOS partition (slice), i.e. before
+the BSD disklabel. It loads the next stage and runs it. The third
+piece, <code class="filename">boot2</code>, is more sophisticated. It loads
+the final kernel loader from a file in the root file system.
+<code class="filename">boot2</code> itself just fits in the 7K of space between
+the disklabel and the UFS superblock, i.e. sectors 2 to 15.
+</p><p>
+<span><strong class="command">disktype</strong></span> recognizes the three stages described above by their
+signatures. There are some more stages in the FreeBSD boot process,
+but they are outside of the scope of <span><strong class="command">disktype</strong></span>.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id896231"></a>3.12.3. Windows and MS-DOS</h3></div></div></div><p>
+Boot loaders for Windows NT derivatives are recognized by scanning
+for "NTLDR". Boot loaders for non-NT Windows versions and MS-DOS
+are recognized by the "MSDOS   SYS" string.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id896248"></a>3.12.4. BeOS and derivatives</h3></div></div></div><p>
+<span><strong class="command">disktype</strong></span> recognizes the boot loader from BeOS x86, and the updated
+version used by yellowTab in ZETA. Haiku (formerly FreeBeOS) uses a
+different loader which is also recognized.
+</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch03s11.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch03.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch03s13.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">3.11. CD File Systems </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 3.13. Disk Image Formats</td></tr></table></div></body></html>

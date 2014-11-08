@@ -1,0 +1,22 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>2.3. Drive Geometry Cruft</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="disktype Documentation"><link rel="up" href="ch02.html" title="Chapter 2. Coming To Terms"><link rel="prev" href="ch02s02.html" title="2.2. Sectors and Blocks"><link rel="next" href="ch02s04.html" title="2.4. Partitioning"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">2.3. Drive Geometry Cruft</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch02s02.html">Prev</a> </td><th width="60%" align="center">Chapter 2. Coming To Terms</th><td width="20%" align="right"> <a accesskey="n" href="ch02s04.html">Next</a></td></tr></table><hr></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="id893709"></a>2.3. Drive Geometry Cruft</h2></div></div></div><p>
+There were times when it was not customary to access hard disk sectors
+by their sequence number. Hard disks (and floppy disks as well) are
+actually organized in three dimensions. There are several rotating
+disks, each with two sides (or surfaces). There is one
+<em class="firstterm">head</em> to read and write data for each surface.
+That head, or actually the whole stack of
+heads, can be moved between the center and the rim of the disk. Each
+surface consists of concentric <em class="firstterm">tracks</em>, which contain the actual
+sectors. A <em class="firstterm">cylinder</em> is all tracks of all surfaces at a certain radius
+taken together. Put another way, all sectors in one cylinder can be
+accessed without moving the head stack. When it comes to coordinates,
+track and cylinder are interchangeable terms.
+</p><p>
+The reason you'll find drive geometry coordinates used in partitioning
+schemes and file systems is twofold: First, older disk interfaces
+required cylinder-head-sector coordinates because the (simple) drive
+electronics couldn't handle logical sector numbers. Second, putting
+data together in one cylinder speeds up access. As hard drives grew
+more complex and more intelligent, both reasons vanished.
+</p></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch02s02.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch02.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch02s04.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">2.2. Sectors and Blocks </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 2.4. Partitioning</td></tr></table></div></body></html>

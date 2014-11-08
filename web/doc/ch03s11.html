@@ -1,0 +1,132 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>3.11. CD File Systems</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="disktype Documentation"><link rel="up" href="ch03.html" title="Chapter 3. Recognized Formats"><link rel="prev" href="ch03s10.html" title="3.10. Miscellaneous Systems"><link rel="next" href="ch03s12.html" title="3.12. Boot Loaders"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">3.11. CD File Systems</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch03s10.html">Prev</a> </td><th width="60%" align="center">Chapter 3. Recognized Formats</th><td width="20%" align="right"> <a accesskey="n" href="ch03s12.html">Next</a></td></tr></table><hr></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="id895773"></a>3.11. CD File Systems</h2></div></div></div><p>
+This section describes system-independent file systems for use on CDs.
+Many vendors just use their platform's native format for bootable CDs.
+It is also possible to put two file systems on a CD without partitioning;
+see "Hybrid PC/Macintosh CDs" below.
+</p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id895786"></a>3.11.1. ISO9660</h3></div></div></div><p>
+The ISO9660 file system is a system-independent file system for
+read-only data CDs. It is named after the ISO standard that defines it.
+Drafts of the standard were known as "High Sierra".
+</p><p>
+The base standard defines three levels of compliance. Level 1 limits
+file names to MS-DOS conventions -- 8 chars for the name, 3 chars
+for the extension. Levels 2 and 3 allow up to 31 characters.
+In practice however, most CDs use Level 1 plus one of the various
+extensions (covered in the following sections).
+That way, MS-DOS gets file names it can handle, and most
+other systems get the full file names from the extension records.
+</p><p>
+ISO9660 puts its first superblock 32K into the device, i.e. in sector 16.
+(CDs always have 2K sectors.) That allows it to co-exist with certain
+native file systems or partition tables. ISO9660 actually uses a list
+of superblocks, or "Volume Descriptors", with different roles.
+The "Primary" volume descriptor, which must be present and first on
+all volumes, uses type 1.
+</p><p>
+While ISO does not post its standards for free,
+<a href="http://www.ecma-international.org/" target="_top">ECMA</a>
+republishes important ISO standards free for anyone.
+ISO 9660 is available as ECMA 119 at
+<a href="http://www.ecma-international.org/publications/files/ecma-st/Ecma-119.pdf" target="_top">http://www.ecma-international.org/publications/files/ecma-st/Ecma-119.pdf</a>.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id895837"></a>3.11.2. The Joliet Extension</h3></div></div></div><p>
+The Joliet extension is favored in the MS Windows world. It allows
+Unicode characters to be used for all text fields, which includes
+file names and the volume name. A "Secondary" volume descriptor with
+type 2 contains the same information as the Primary one, but in
+16-bit encoded Unicode. As a result of this, the volume name is limited
+to 16 characters.
+</p><p>
+<span><strong class="command">disktype</strong></span> prints the Unicode volume name from the Joliet volume descriptor
+if present.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id895863"></a>3.11.3. The RockRidge Extension</h3></div></div></div><p>
+The RockRidge extension is favored in the Unix world. It lifts file name
+restrictions, but also allows Unix-style permissions and special files
+to be stored on the CD.
+</p><p>
+Since RockRidge does not affect the volume descriptors, <span><strong class="command">disktype</strong></span>
+does not detect or report it.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="fmt_hybrid"></a>3.11.4. Hybrid PC/Macintosh CDs</h3></div></div></div><p>
+Apple has its own set of ISO9660 extensions to store Mac OS metadata
+for files, but they are seldom used. Instead, a full HFS or HFS Plus
+file system is put on the CD together with an ISO9660 file system.
+This works well, since both file systems are flexible in placing their
+data structures, and the (fixed-position) superblocks don't overlap.
+Some mastering programs use an Apple-style partition table with a single entry,
+for no reason in particular.
+File data can be shared between both file systems simply by pointing at
+the same blocks in the appropriate structures.
+</p><p>
+Hybrid CDs contain two valid file systems, and <span><strong class="command">disktype</strong></span> will
+report them as such.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id895913"></a>3.11.5. The El Torito Boot Specification</h3></div></div></div><p>
+The El Torito standard defines a flexible format to store boot code
+on ISO9660 file systems. It is implemented on most PCs today.
+A volume descriptor with type 0 (actually called a "Boot Record")
+points to another sector containing the actual "boot catalog".
+That catalog lists a default boot image, plus an optional list of
+boot images for specific hardware.
+</p><p>
+A boot image can be an image of a floppy disk (1.2, 1.44, or 2.88 MB),
+which will be loaded into RAM by the BIOS and used to emulate a
+bootable floppy. Hard disk emulation works likewise, but is not as useful.
+Finally, a boot image can be 'non-emulated', i.e. just a piece of boot
+code that knows how to access the CD without emulation. Whether the
+boot image is also available as a file on the CD is up to the CD mastering
+software.
+</p><p>
+<span><strong class="command">disktype</strong></span> will report the kind and parameters of all boot images found.
+Their contents are analyzed for file systems and boot code in the usual way.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id895949"></a>3.11.6. UDF</h3></div></div></div><p>
+UDF (Universal Disk Format) is a new cross-platform file format for CDs.
+It offers the capability to create the file system incrementally on
+write-once (i.e. CD-R) and read-write (i.e. CD-RW) media. That allows
+users to use standard file manager operations to create a disk
+(instead of specialized CD mastering programs).
+UDF is designed to co-exist with an ISO9660 structure,
+and most UDF implementations write both structures (for the same
+set of files) by default.
+The DVD-Video and DVD-Audio formats are based on UDF.
+</p><p>
+<span><strong class="command">disktype</strong></span> supports UDF and reports all interesting information it finds.
+However, it may not detect some exotic variations. One reason for this is
+that the sector size is variable, but must be guessed -- the
+"anchor volume descriptor" is located at sector 256, not at a certain
+byte offset.
+Most UDF disks also carry an ISO9660 file system, which is detected and
+reported separately.
+</p><p>
+As for standards, UDF is a bit complicated.
+Actual UDF standards are issued by the
+Optical Storage Technology Association (OSTA) and can be downloaded from
+<a href="http://www.osta.org/specs/" target="_top">http://www.osta.org/specs/</a>. There are several versions
+of the specification, and for example DVD-Video disks must conform to
+version 1.02.
+The OSTA documents are not complete standards, but list additional
+restrictions and extensions to the base standard,
+ISO 13346 a.k.a. ECMA 167 (available at 
+<a href="http://www.ecma-international.org/publications/files/ecma-st/Ecma-167.pdf" target="_top">http://www.ecma-international.org/publications/files/ecma-st/Ecma-167.pdf</a>).
+</p><p>
+There is also another standard, ECMA 168 a.k.a. ISO 13490
+(available at
+<a href="http://www.ecma-international.org/publications/files/ecma-st/Ecma-168.pdf" target="_top">http://www.ecma-international.org/publications/files/ecma-st/Ecma-168.pdf</a>),
+that claims to be an improved (and partially incompatible) version of
+ISO 9660 a.k.a. ECMA 119. It is still designed for read-only
+and write-once media, but now shares some elements with
+ISO 13346 a.k.a. ECMA 167 (i.e. UDF).
+I have yet to find out what relevance it has in practice, if any.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id896008"></a>3.11.7. Sega Dreamcast</h3></div></div></div><p>
+The Sega Dreamcast game console uses a special physical format called
+GD-ROM (?),
+but a standard ISO 9660 file system on top of that.
+There is an additional signature at the start of the first sector,
+which is detected by <span><strong class="command">disktype</strong></span>. It is unclear if this is part of
+boot code of just a general signature.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id896030"></a>3.11.8. Xbox DVD file system</h3></div></div></div><p>
+The Microsoft Xbox game console uses a special file system for DVDs,
+which <span><strong class="command">disktype</strong></span> tries to recognize.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id896048"></a>3.11.9. 3DO file system</h3></div></div></div><p>
+The 3DO game console system (?) uses standard Mode 1 CD-ROM disks,
+but with a custom file system. The signature in the first sector is detected
+by <span><strong class="command">disktype</strong></span>.
+</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch03s10.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch03.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch03s12.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">3.10. Miscellaneous Systems </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 3.12. Boot Loaders</td></tr></table></div></body></html>

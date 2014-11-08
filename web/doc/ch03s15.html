@@ -1,0 +1,36 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>3.15. Compression Formats</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="disktype Documentation"><link rel="up" href="ch03.html" title="Chapter 3. Recognized Formats"><link rel="prev" href="ch03s14.html" title="3.14. Archive Formats"><link rel="next" href="ch04.html" title="Chapter 4. Other Sources of Information"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">3.15. Compression Formats</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch03s14.html">Prev</a> </td><th width="60%" align="center">Chapter 3. Recognized Formats</th><td width="20%" align="right"> <a accesskey="n" href="ch04.html">Next</a></td></tr></table><hr></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="id896580"></a>3.15. Compression Formats</h2></div></div></div><p>
+File compression formats are supported because they can occur on Linux
+installation disks and ramdisks, but also for convenience. The test
+images in the file system sampler are gzip-compressed for storage.
+</p><p>
+When <span><strong class="command">disktype</strong></span> identifies compressed data,
+it spawns an external decompressor programs and analyzes the
+decompressed data. Compressed data may start at a sector (i.e. 512
+byte) boundary up to 4096 bytes into the disk or partition. This is
+especially useful for installation disks.
+</p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id896606"></a>3.15.1. compress</h3></div></div></div><p>
+The traditional Unix compress format uses the moderately efficient (by
+today's standards) LZW algorithm. It can be
+identified by a two-byte magic signature. Decompression is done using
+the external <code class="filename">gzip</code> program.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id896625"></a>3.15.2. gzip</h3></div></div></div><p>
+The gzip format uses a LZ77 derivative with adaptive Huffmann
+compression. It is both reasonably compact and reasonably fast, and
+used in many places. Amongst them are the ZIP archive format, the zlib
+compression library, and the cramfs and squashfs file systems. The
+Linux kernel natively supports gzip compression for initial ramdisks.
+</p><p>
+The gzip file format can be identified by a two-byte magic signature.
+Decompression is done using the external <code class="filename">gzip</code>
+program.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id896652"></a>3.15.3. bzip2</h3></div></div></div><p>
+The bzip2 format uses the Burrows-Wheeler transform, a relatively
+recent compression algorithm. It is more efficient than gzip, but
+takes a lot of memory and time to decompress. It is supported in
+<span><strong class="command">disktype</strong></span> more for the sake of completeness.
+</p><p>
+The file format can be identified by a two-byte magic signature.
+Decompression is done using the external <code class="filename">bzip2</code>
+program.
+</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch03s14.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch03.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch04.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">3.14. Archive Formats </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 4. Other Sources of Information</td></tr></table></div></body></html>

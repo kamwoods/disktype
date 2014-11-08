@@ -1,0 +1,32 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>3.14. Archive Formats</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="disktype Documentation"><link rel="up" href="ch03.html" title="Chapter 3. Recognized Formats"><link rel="prev" href="ch03s13.html" title="3.13. Disk Image Formats"><link rel="next" href="ch03s15.html" title="3.15. Compression Formats"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">3.14. Archive Formats</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch03s13.html">Prev</a> </td><th width="60%" align="center">Chapter 3. Recognized Formats</th><td width="20%" align="right"> <a accesskey="n" href="ch03s15.html">Next</a></td></tr></table><hr></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="id896475"></a>3.14. Archive Formats</h2></div></div></div><p>
+<span><strong class="command">disktype</strong></span> detects selected archive formats,
+because they can occur on Linux installation disks, but also on backup
+tapes.
+</p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id896492"></a>3.14.1. tar</h3></div></div></div><p>
+The tar (tape archive) format as originally created for backup
+to magnetic tape. Today, it is <span class="emphasis"><em>the</em></span> Unix
+archive format and is widely used for software distribution as well
+as backup. It conserves all Unix file system specialties, including
+permissions and hard links. tar by itself does not include compression
+ans is not exactly space-efficient. Therefore it is usually combined
+with a file compressor like gzip, compress, or bzip2.
+</p><p>
+Several variations of the format exist. <span><strong class="command">disktype</strong></span> identifies the base
+format using the checksum of the first header, then looks for
+signatures to identify the GNU and POSIX flavors. The code to do this
+was contributed by Doug Merritt.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id896525"></a>3.14.2. cpio</h3></div></div></div><p>
+cpio is another Unix archive format, originally created for backup purposes.
+Some variations use binary headers, while others encode numbers as ASCII.
+<span><strong class="command">disktype</strong></span> should recognize most of these variations.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id896544"></a>3.14.3. dump/restore</h3></div></div></div><p>
+The dump and restore commands are used to back up a file system at
+a very low level, but short of a sector-by-sector copy. The data
+is very file system specific and in general can only be used by
+the same operating system and the same file system driver.
+<span><strong class="command">disktype</strong></span> tries to identify some formats by their magic number.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id896565"></a>3.14.4. bar</h3></div></div></div><p>
+To be honest, I don't know anything about this format, other than it
+is an archive format. The signature check was contributed by Doug Merritt.
+</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch03s13.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch03.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch03s15.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">3.13. Disk Image Formats </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 3.15. Compression Formats</td></tr></table></div></body></html>

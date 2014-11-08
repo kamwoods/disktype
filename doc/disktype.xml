@@ -1,0 +1,88 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+                      "http://www.oasis-open.org/docbook/xml/4.0/docbookx.dtd"
+[
+  <!ENTITY disktype "<command>disktype</command>">
+
+  <!ENTITY chusage   SYSTEM "usage.xml">
+  <!ENTITY chterms   SYSTEM "terms.xml">
+  <!ENTITY chformats SYSTEM "formats.xml">
+]>
+
+
+<book>
+<bookinfo>
+<title>disktype Documentation</title>
+
+<author>
+  <firstname>Christoph</firstname>
+  <surname>Pfisterer</surname>
+</author>
+<copyright>
+  <year>2003</year>
+  <year>2004</year>
+  <year>2006</year>
+  <holder>Christoph Pfisterer</holder>
+</copyright>
+
+<abstract>
+<para>
+This is the documentation for &disktype;, a program
+to detect the content format of a disk or disk image.
+It covers installation and usage of the program,
+but most of all provides background information
+on the recognized file systems and other formats.
+That information is useful both for interpreting
+&disktype; output and for general reference.
+Pointers to further documentation are included where possible.
+</para>
+</abstract>
+</bookinfo>
+
+
+&chusage;
+
+&chterms;
+
+&chformats;
+
+
+<chapter>
+<title>Other Sources of Information</title>
+
+<para>
+The Operating System Resource Center at
+<ulink url="http://www.nondot.org/sabre/os/articles/" />
+has a wealth of information on various operating system techniques,
+including file systems.
+</para>
+<para id="other_linux">
+Another important source of information is the Linux kernel source,
+available from
+<ulink url="http://www.kernel.org/" />.
+File system drivers are in the <filename>fs</filename> directory, but
+many include files defining structures are actually in
+<filename>include/linux</filename>. The RAID and LVM code lives in
+<filename>drivers/md</filename> and
+<filename>include/linux/raid</filename>.
+All code for reading various partition maps is in
+<filename>fs/partitions</filename>.
+The Linux kernel even contains some format detection code in
+<filename>init/do_mounts.c</filename>, used in mounting an initial
+ramdisk (initrd).
+</para>
+
+<para>
+Other Unix kernels are also available in source code, like Darwin (the
+BSD-based kernel used in Mac&nbsp;OS&nbsp;X) at
+<ulink url="http://www.opensource.apple.com/darwinsource/" />
+and the free BSD derivatives
+FreeBSD (<ulink url="http://www.freebsd.org/" />),
+OpenBSD (<ulink url="http://www.openbsd.org/" />), and
+NetBSD  (<ulink url="http://www.netbsd.org/" />).
+</para>
+
+</chapter>
+
+
+</book>

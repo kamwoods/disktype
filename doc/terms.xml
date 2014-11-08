@@ -1,0 +1,186 @@
+<chapter>
+<title>Coming To Terms</title>
+
+<para>
+This chapter wants to prepare you for the wealth of terms invented by
+file system designers.
+Once you know what the typical elements of a file system are,
+it'll be much easier to map proprietary terms to your mind model.
+</para>
+
+<section>
+<title>Byte Ordering</title>
+<para>
+The byte has been universally accepted as the atomic entity of data
+storage for some decades now. But beyond that, you're on your own.
+Integer numbers larger than 8 bits are stored in several bytes, and
+there the common ground ends.
+</para>
+<para>
+In the <firstterm>little endian</firstterm> format,
+the least significant byte (LSB) is stored first.
+So the hexadecimal number $FACE would be stored as $CE $FA.
+The <firstterm>big endian</firstterm> format stores
+the most significant byte (MSB) first, resulting in $FA $CE.
+</para>
+<para>
+Most CPUs have a preferred or native format. Data in the other format
+can only be accessed with a performance penalty. As a result, everyone
+tries to use their platform's native byte order. As you'll see later
+on, some formats are defined to use a specific byte order, while
+others can occur in either one. This will be noted as appropriate.
+</para>
+</section>
+
+<section>
+<title>Sectors and Blocks</title>
+<para>
+Mass storage devices (hard disks, CD-ROMs, tapes)
+operate on chunks of data, usually called
+<firstterm>sectors</firstterm>. The size of these device sectors varies,
+but is fixed for any
+one device. Hard disks and floppies usually use 512 bytes, while data CDs
+and DVDs use 2048 bytes. Today, it is customary to number all sectors sequentially
+and leave the details to the device.
+</para>
+<para>
+File systems also operate on chunks at a time, but they don't need to
+be the same size as the device's sectors. The chunks used by the file
+system are usually called <firstterm>blocks</firstterm>, but <firstterm>cluster</firstterm>, <firstterm>allocation block</firstterm>, and
+<firstterm>allocation unit</firstterm> are also common.
+</para>
+<para>
+With large block sizes, small files have a large overhead.
+Some file systems were extended to compensate for this.
+One strategy is called <firstterm>tail packing</firstterm>,
+another one divides blocks further into equally-sized
+<firstterm>fragments</firstterm>. The effect is the same:
+pieces of data from several files are packed into a single block,
+improving efficiency.
+</para>
+</section>
+
+<section>
+<title>Drive Geometry Cruft</title>
+<para>
+There were times when it was not customary to access hard disk sectors
+by their sequence number. Hard disks (and floppy disks as well) are
+actually organized in three dimensions. There are several rotating
+disks, each with two sides (or surfaces). There is one
+<firstterm>head</firstterm> to read and write data for each surface.
+That head, or actually the whole stack of
+heads, can be moved between the center and the rim of the disk. Each
+surface consists of concentric <firstterm>tracks</firstterm>, which contain the actual
+sectors. A <firstterm>cylinder</firstterm> is all tracks of all surfaces at a certain radius
+taken together. Put another way, all sectors in one cylinder can be
+accessed without moving the head stack. When it comes to coordinates,
+track and cylinder are interchangeable terms.
+</para>
+<para>
+The reason you'll find drive geometry coordinates used in partitioning
+schemes and file systems is twofold: First, older disk interfaces
+required cylinder-head-sector coordinates because the (simple) drive
+electronics couldn't handle logical sector numbers. Second, putting
+data together in one cylinder speeds up access. As hard drives grew
+more complex and more intelligent, both reasons vanished.
+</para>
+</section>
+
+<section>
+<title>Partitioning</title>
+<para>
+Hard disks are usually partitioned. That means they are divided into
+independent sections called <firstterm>partitions</firstterm> or
+<firstterm>slices</firstterm>. The operating
+system treats each partition as if it was a separate device. Thus
+partitions can be used for different purposes and can have different
+formats.
+</para>
+<para>
+Unfortunately, partitions don't come out of nowhere. Their locations
+must be recorded on the disk itself, usually in the first few
+sectors. Naturally, there are just as many such partitioning schemes
+as there are vendors. The data that records partitions is called the
+<firstterm>partition map</firstterm>, <firstterm>partition table</firstterm>,
+<firstterm>disklabel</firstterm>, or <firstterm>VTOC</firstterm>
+(for virtual table of contents).
+</para>
+<para>
+At least on the PC there is something of a standard partitioning
+scheme, originally defined by MS-DOS. Some PC Unix systems keep using
+their own scheme, but put it inside a PC-style partition, to allow
+other operating systems to co-exist on the disk.
+</para>
+<!-- TODO: something on RAID and logical volume managers -->
+</section>
+
+<section>
+<title>Superblocks and Spacing</title>
+<para>
+Every file system has some place to store global information like
+the size, volume name, and anchor pointers to other structures. This place
+is usually one special sector or block at the beginning of the device.
+Almost all file systems include a certain constant value somewhere with
+that data, dubbed a <firstterm>magic</firstterm> value (or string).
+This is what &disktype; uses to identify file system formats.
+</para>
+<para>
+Some file systems use several such structures, or store backup copies
+at other locations inside the file system. Names are likewise variable.
+The Unix world uses <firstterm>superblock</firstterm> almost exclusively.
+Other terms include <firstterm>boot sector</firstterm>,
+<firstterm>root sector</firstterm>, <firstterm>root block</firstterm>,
+<firstterm>volume descriptor</firstterm> and
+<firstterm>volume header</firstterm>.
+</para>
+<para>
+Many file systems don't put the superblock at the very start of the
+device. The space before the superblock can be used for boot code or
+partition maps. In some cases, one other reason for the offset is
+increased resilience against DOS formatting tools.
+</para>
+</section>
+
+<section>
+<title>Inodes and Links</title>
+<para>
+While plain file systems directly associate a file name in a directory with
+the file data, Unix file systems add a layer of indirection between the two,
+the <firstterm>inodes</firstterm>. The directory entries only store the file name
+and an inode number; all other data (even the type of the entry) is stored
+in the inode structure. It is possible to have several directory entries
+pointing to the same inode. For files, this is called a
+<firstterm>hard link</firstterm>. For directories, this is used by the
+file system internally to link back to parent directories.
+Hard links are somewhat fragile and limited to single file systems.
+<firstterm>Symbolic links</firstterm> don't link directly to the inode, but
+store a (usually relative) path, in a separate inode.
+</para>
+</section>
+
+<section>
+<title>Block Allocation</title>
+<para>
+All read-write file systems have to deal with the problem of assigning blocks to files. There are actually two problems that may be solved separately: finding a free block (which requires remembering which blocks are free and which are not), and remembering the blocks that store the data of a certain file.
+</para>
+<para>
+The first distinguishing feature is the use of <firstterm>extents</firstterm>.
+An extent specifies a range of blocks by giving the first block's number and
+the length of the range in blocks. The alternative is to store each block's number separately, which usually takes more space, but is slightly simpler to handle.
+</para>
+<para>
+Many file systems use an <firstterm>allocation bitmap</firstterm> to store
+which blocks are used. That bitmap requires one bit per useable block.
+Searching such a bitmap can be quite slow. Some file systems cache
+a short list of free blocks, which can be updated in the background.
+</para>
+<para>
+The traditional Unix way to store the blocks that make up a file
+doesn't use extents, but a block number list. The first few numbers are stored
+in the inode structure; these are called <firstterm>direct blocks</firstterm>.
+If that space is exhausted, one block is allocated to store further block numbers. Only the block number of this <firstterm>indirect block</firstterm> is stored in the inode structure. If that space is also exhausted, the method is applied recursively, leading to double-indirect and sometimes triple-indirect blocks.
+</para>
+</section>
+
+
+</chapter>

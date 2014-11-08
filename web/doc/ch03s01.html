@@ -1,0 +1,56 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>3.1. Amiga</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="disktype Documentation"><link rel="up" href="ch03.html" title="Chapter 3. Recognized Formats"><link rel="prev" href="ch03.html" title="Chapter 3. Recognized Formats"><link rel="next" href="ch03s02.html" title="3.2. Apple Macintosh"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">3.1. Amiga</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch03.html">Prev</a> </td><th width="60%" align="center">Chapter 3. Recognized Formats</th><td width="20%" align="right"> <a accesskey="n" href="ch03s02.html">Next</a></td></tr></table><hr></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="id894353"></a>3.1. Amiga</h2></div></div></div><p>
+The support for Amiga formats is mainly aimed at users of emulators.
+The .ADF disk image format used with most emulators is a plain dump of
+the disk, without special headers or compression. As such, <span><strong class="command">disktype</strong></span>
+doesn't need special support to work with it. All Amiga formats
+originated on the 68K platform and thus use big-endian byte order.
+</p><p>
+Broad information on Amiga file and disk formats can be found at
+<a href="http://perso.club-internet.fr/lclevy/amiga/formats.html" target="_top">http://perso.club-internet.fr/lclevy/amiga/formats.html</a>.
+The .ADF format FAQ is of particular interest, it is located at
+<a href="http://perso.club-internet.fr/lclevy/adflib/adf_info.html" target="_top">http://perso.club-internet.fr/lclevy/adflib/adf_info.html</a>.
+</p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id894393"></a>3.1.1. The Amiga File System</h3></div></div></div><p>
+The Amiga file system comes in several variants, but is used the same
+on floppies and on hard disk partitions. All variants store a boot
+block at the very beginning of the disk and a root block in the
+middle. Apparently the boot block does not contain any actual pointers
+to the root block, so its position must be determined (well, more like
+guessed) from disk parameters like block size, block count, and
+cylinder boundaries.
+</p><p>
+<span><strong class="command">disktype</strong></span> only uses the boot block to
+recognize the format. It contains a signature and a flags field that
+determine the file system variant. There's the original file system
+(reported as "Amiga OFS file system"), and the later "fast" file
+system (reported as "Amiga FFS file system"). The "fast" file system
+has variants for better dealing with international characters (well,
+European accented characters as in ISO Latin 1, that is), and a
+variant using a "directory cache".
+</p><p>
+As mentioned, <span><strong class="command">disktype</strong></span> is unable to locate
+the root block right now, and thus can't print any more information
+like volume name or size. It does, however, check the size of the file
+against standard floppy sizes and reports matches.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id894441"></a>3.1.2. The Professional File System</h3></div></div></div><p>
+All that is known about the "Professional File System" is its
+signature in the boot block.
+<span><strong class="command">disktype</strong></span> reports it if found.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id894458"></a>3.1.3. The Rigid Disk Partitioning Scheme</h3></div></div></div><p>
+The so-called "Rigid Disk" partitioning scheme is used on hard disks
+and sometimes(?) on removable media like Zip disks. The Rigid Disk
+block can be located anywhere within the first 16 sectors of the
+disk. The structure itself is only 256 bytes in size and contains a
+pointer to a linked list of partition descriptors. Each of these is
+also 256 bytes in size, is located in a sector of its own somewhere on
+the disk, and contains a pointer to the next such descriptor.
+</p><p>
+It is somewhat unclear how exactly sector sizes other than 512 bytes
+are to be handled. In lack of further data (or actually any test
+images at all), <span><strong class="command">disktype</strong></span> assumes 512 byte
+sectors and warns if the Rigid Disk block says
+different. <span><strong class="command">disktype</strong></span> prints the "drive name"
+of each partition. The partition descriptor also contains information
+about the file system contained in the partition, which is decoded and
+printed. The contents of the partition will be analyzed in any case.
+</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch03.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch03.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch03s02.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 3. Recognized Formats </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 3.2. Apple Macintosh</td></tr></table></div></body></html>

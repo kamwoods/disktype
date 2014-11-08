@@ -1,0 +1,58 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>3.4. General PC Formats</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="disktype Documentation"><link rel="up" href="ch03.html" title="Chapter 3. Recognized Formats"><link rel="prev" href="ch03s03.html" title="3.3. ATARI ST"><link rel="next" href="ch03s05.html" title="3.5. Linux File Systems"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">3.4. General PC Formats</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch03s03.html">Prev</a> </td><th width="60%" align="center">Chapter 3. Recognized Formats</th><td width="20%" align="right"> <a accesskey="n" href="ch03s05.html">Next</a></td></tr></table><hr></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="id894760"></a>3.4. General PC Formats</h2></div></div></div><p>
+Although the PC-style partition tables were introduced by
+Microsoft(?), their universal adoption in the PC world would make it
+unfair to put them in the Microsoft section.
+</p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id894772"></a>3.4.1. PC-style Partition Tables</h3></div></div></div><p>
+A PC-style partition table is stored in the very first sector of the
+disk, dubbed the Master Boot Record (MBR). It shares that sector with
+first-level boot code. As a result, the table only has four
+entries. The byte order is little-endian, as dictated by the x86
+platform.
+</p><p>
+The beginning and end of each partition are stored both in
+three-dimensional coordinates (cylinder-head-sector) and as a logical
+block number. The actual geometry of the drive (number of cylinders,
+heads, and sectors) is not stored in the MBR. The three-dimensional
+format has hit size limits several times now. For some years, hard
+disks have lied about their geometry and re-mapped it internally, so
+that the values would fit the fields in the partition table. Today,
+even that won't do. <span><strong class="command">disktype</strong></span> ignores the
+geometric fields and uses just the logical sector numbers.
+</p><p>
+Each partition also carries a one-byte type number. Out of habit they
+are written in hexadecimal without a special prefix. 83 actually means
+$83, or 131 in decimal. <span><strong class="command">disktype</strong></span> also
+displays a name for each partition type, using the same table as Linux
+fdisk.
+</p><p>
+For situations where more than four partitions are required, so-called
+"extended" partitions were created. One partition entry in the MBR is
+used to point to the extended partition, which contains a linked list
+of partition map sectors using the same layout as the one in the
+MBR. Partitions defined inside an extended partition are called
+"logical" partitions, while the ones defined in the MBR are called
+"primary". The actual differences are slight and mostly affect booting
+DOS-based operating systems.
+</p><p>
+More information on PC-style partition tables can be found at
+<a href="http://www.win.tue.nl/~aeb/partitions/partition_tables.html" target="_top">http://www.win.tue.nl/~aeb/partitions/partition_tables.html</a>
+and
+<a href="http://www.win.tue.nl/~aeb/partitions/partition_types.html" target="_top">http://www.win.tue.nl/~aeb/partitions/partition_types.html</a>.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id894836"></a>3.4.2. EFI GPT Partition Table</h3></div></div></div><p>
+The Extensible Firmware Interface (EFI) is the designated successor to
+the PC BIOS firmware. It tries to get rid of as much legacy APIs and
+structures as possible, including the MBR partition table. The GUID
+Partition Table (GPT) is stored starting in sector 1 and typically
+allows for up to 128 partitions. It uses 64-bit LBA addressing, GUIDs to
+identify partitions and their format, and even allows for a clear-text
+name. The partition table is protected by a checksum and a backup is
+stored at the end of the device. Sector 0 is required to contain a
+MBR partition table with a single "protective" entry that covers the
+whole disk.
+</p><p>
+More information on EFI can be found at
+<a href="http://www.uefi.org/" target="_top">http://www.uefi.org/</a>
+and
+<a href="http://www.intel.com/technology/efi/" target="_top">http://www.intel.com/technology/efi/</a>.
+</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch03s03.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch03.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch03s05.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">3.3. ATARI ST </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 3.5. Linux File Systems</td></tr></table></div></body></html>

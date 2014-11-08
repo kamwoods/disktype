@@ -1,0 +1,25 @@
+#!/bin/sh
+set -e
+for image in *.image ; do
+  if [ -f "$image" ]; then
+    zimage=$image.gz
+    if [ -f $zimage -a $image -nt $zimage ]; then
+      echo "Compressing $image"
+      gzip -cn -9 $image >temp.gz
+      if cmp -s temp.gz $zimage ; then
+	mv -f temp.gz $zimage
+      else
+	echo "  no change"
+	rm -f temp.gz
+      fi
+    fi
+    if [ ! -f $zimage ]; then
+      echo "Compressing $image"
+      gzip -cn -9 $image >$zimage
+    fi
+    if [ "$1" = "-f" ]; then
+      rm -f $image
+    fi
+  fi
+done
+exit 0

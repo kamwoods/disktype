@@ -1,0 +1,26 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>3.8. IBM</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="disktype Documentation"><link rel="up" href="ch03.html" title="Chapter 3. Recognized Formats"><link rel="prev" href="ch03s07.html" title="3.7. Microsoft"><link rel="next" href="ch03s09.html" title="3.9. Other Unix Flavors"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">3.8. IBM</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch03s07.html">Prev</a> </td><th width="60%" align="center">Chapter 3. Recognized Formats</th><td width="20%" align="right"> <a accesskey="n" href="ch03s09.html">Next</a></td></tr></table><hr></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="id895377"></a>3.8. IBM</h2></div></div></div><p>
+This section lists formats that originated at IBM.
+</p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id895386"></a>3.8.1. HPFS</h3></div></div></div><p>
+HPFS, the High Performance File System, was introduced in OS/2 as an
+alternative to FAT. It's design is quite clean, and has an eye on
+performance. There is also support for extended attributes, apparently
+used by OS/2's graphical shell, the Workspace Manager.
+</p><p>
+HPFS preserves the DOS boot sector in sector 0 and puts its own superblocks
+into sectors 16 and 17 (that is, 8K into the device). The space in between
+is used for boot code. All structures in HPFS are clearly marked with
+magic numbers.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id895408"></a>3.8.2. JFS</h3></div></div></div><p>
+The JFS file system was originally created for AIX, IBM's flavor of Unix.
+It was later made more portable and was released with OS/2 Warp.
+IBM also ported it to Linux and released it under the GPL.
+The main feature of JFS is meta-data journaling.
+</p><p>
+JFS puts its superblock 32K into the device. It uses extents, inodes,
+and B+ trees.
+</p><p>
+Information on JFS (at least the open-sourced Linux implementation)
+can be found at
+<a href="http://oss.software.ibm.com/jfs/" target="_top">http://oss.software.ibm.com/jfs/</a>.
+</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch03s07.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch03.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch03s09.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">3.7. Microsoft </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 3.9. Other Unix Flavors</td></tr></table></div></body></html>

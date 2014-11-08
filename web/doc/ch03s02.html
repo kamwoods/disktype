@@ -1,0 +1,82 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>3.2. Apple Macintosh</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="disktype Documentation"><link rel="up" href="ch03.html" title="Chapter 3. Recognized Formats"><link rel="prev" href="ch03s01.html" title="3.1. Amiga"><link rel="next" href="ch03s03.html" title="3.3. ATARI ST"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">3.2. Apple Macintosh</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch03s01.html">Prev</a> </td><th width="60%" align="center">Chapter 3. Recognized Formats</th><td width="20%" align="right"> <a accesskey="n" href="ch03s03.html">Next</a></td></tr></table><hr></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="id894502"></a>3.2. Apple Macintosh</h2></div></div></div><p>
+Macintosh formats originated on the 68K and PowerPC platforms and thus
+use big-endian byte order.
+Apple's mystic collection of disk image formats is discussed in
+<a href="ch03s13.html#fmt_apple_images" title="3.13.2. Apple Disk Images">Section 3.13.2, &#8220;Apple Disk Images&#8221;</a>.
+</p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id894521"></a>3.2.1. The Macintosh File System (MFS)</h3></div></div></div><p>
+This file system was used on the first Macs, using 400K floppies. It
+doesn't support folders (the Mac term for directories), just a flat set of
+files. The format was quickly replaced by the Hierarchical File
+System, which did support folders.
+</p><p>
+<span><strong class="command">disktype</strong></span> only recognizes the volume header
+signature of MFS.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id894545"></a>3.2.2. The Hierarchical File System (HFS)</h3></div></div></div><p>
+This file system was used on Macs for many years and for all media
+(floppies, hard disks, CD-ROMs). It has some special features, like
+the 4-character type and creator code remembered for each file, and
+dual-fork files, where the "data fork" stores application-specific
+data (like on other systems) and the "resource fork" stores additional
+information in a system-defined chunk format.
+</p><p>
+The HFS superblock is stored 1024 bytes into the device, independent
+of sector size (which is assumed to be 512 bytes in general). The
+allocation block size is usually larger, from 4K to 32K. HFS uses
+B+-trees to store directory contents and file extents.
+</p><p>
+HFS hit some limits with growing disk sizes (compare FAT16), and so
+the HFS+ format was designed as a replacement. HFS is still in
+widespread use, especially on interchange media, including disk images
+used for software distribution.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id894577"></a>3.2.3. The HFS Plus File System</h3></div></div></div><p>
+The HFS+ format was defined to improve shortcomings of HFS. It
+supports all the features of HFS, but also provides for POSIX file
+semantics and permissions. It is the primary file system for Mac
+OS X.  Classic Mac OS versions starting with 8.1 also support it.
+</p><p>
+Like HFS, HFS+ has a superblock 1024 bytes into the device and uses
+B+-trees to store directory contents and file extents. The block size
+defaults to 4K.
+</p><p>
+HFS+ volumes are often "wrapped" inside a dummy HFS volume. The dummy
+volume contains a ReadMe file, explaining the situation to the user of
+a pre-8.1 Mac OS release. It also contains a hidden System file,
+required for booting from a HFS+ volume on some machines. Special
+fields in the HFS volume header tell HFS+-aware systems where to find
+the actual volume.
+</p><p>
+<span><strong class="command">disktype</strong></span> recognizes both wrapped and non-wrapped HFS+ volumes. A
+wrapped volume will report accordingly, like in the following example:
+</p><pre class="screen">
+--- hfs-plus-wrapped.image
+Regular file, size 8 MiB (8388608 bytes)
+HFS file system
+  Volume name "HFS Plus Wrapped"
+  Volume size 7.992 MiB (8380416 bytes, 2046 blocks of 4 KiB)
+HFS wrapper for HFS Plus
+  HFS Plus file system
+    Volume size 7.953 MiB (8339456 bytes, 2036 blocks of 4 KiB)
+    Volume name "HFS Plus Wrapped"
+</pre><p>
+HFS+ stores the volume name in the directory data B-tree (the "catalog"),
+not in the volume header. While <span><strong class="command">disktype</strong></span> makes some attempt to retrieve
+the name, it often fails on hard disks because the catalog is fragmented.
+It usually works on CDs and disk images, though.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id894642"></a>3.2.4. The Apple Partitioning Scheme</h3></div></div></div><p>
+Apple's partitioning scheme is quite pleasant since it is exclusively
+based on logical sector numbers. (This may have to do with Apple's
+early adoption of SCSI.) It seems to be fixed to a sector size of 512
+bytes, even on CDs.
+</p><p>
+The partition map is stored using one sector per partition, starting
+at sector 1. Sector 0 is used for driver information. The partition
+map also contains an entry for itself, and entries for any free space
+between or after partitions. According to the spec, every sector of
+the disk must be accounted for in the map.
+</p><p>
+The type of the partition is stored as a clear text string, using such
+names as "Apple_HFS" or "Apple_Free" (for unused space). There is no
+distrinction betweeen HFS and HFS+ here; see the blurb about wrapped
+HFS+ volumes above.
+</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch03s01.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch03.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch03s03.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">3.1. Amiga </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 3.3. ATARI ST</td></tr></table></div></body></html>

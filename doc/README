@@ -1,0 +1,86 @@
+$Id: README,v 1.2 2004/05/05 17:34:15 chrisp Exp $   -*- text -*-
+
+ disktype Documentation README
+===============================
+
+This file describes how the disktype documentation is organized and
+how the DocBook tools are used to generate readable formats.
+
+
+ Basics
+--------
+
+The documentation consists of a single DocBook document, spread over
+several physical files. This directory also includes style sheet
+customizations and a Makefile to generate one-page HTML, multi-page
+HTML, and LaTeX source from the DocBook source.
+
+The document is written to DocBook XML 4.1.2. The main file is
+disktype.xml, it references the other .xml files automatically.
+
+
+ Requisites
+------------
+
+Five requisites are required to process the DocBook source:
+
+ - GNU make
+
+ - xsltproc (part of libxslt, http://xmlsoft.org/XSLT/)
+
+ - The DTD for DocBook XML (http://www.oasis-open.org/docbook/xml/)
+
+ - The DocBook XSL Stylesheets originally created by Norman Walsh
+   (http://docbook.sourceforge.net/projects/xsl/index.html)
+
+ - The DB2LaTeX XSL Stylesheets (http://db2latex.sourceforge.net/)
+
+To get the first four on Debian GNU/Linux, install the following
+packages: make, xsltproc, docbook-xml, docbook-xsl.
+
+To get the first four on Mac OS X with Fink, install the following
+packages: libxslt, docbook-dtd, docbook-xsl. GNU make ships with
+Mac OS X as part of the Developer Tools package.
+
+
+ Path Setup
+------------
+
+xsltproc needs to find the DTD and the appropriate XSL stylesheet.
+
+For the DTD, xsltproc's built in mechanisms are used. You must set the
+environment variable SGML_CATALOG_FILES to point to a SGML-style
+catalog file, which (directly or indirectly) maps the public
+identifier used in the DOCTYPE to a file containing the DTD. The
+recommended method is to create a file '.catalog' in your home
+directory and point to the catalog file shipped with the DocBook DTD
+from there. Examples:
+
+  From my ~/.cshrc:
+
+    setenv SGML_CATALOG_FILES ~/.catalog
+
+  My ~/.catalog on a Mac OS X / Fink system:
+
+    CATALOG "/sw/share/xml/dtd/docbookx/catalog"
+
+  My ~/.catalog on a Debian GNU/Linux system:
+
+    CATALOG "/usr/share/sgml/docbook/dtd/xml/4.1.2/docbook.cat"
+
+Important: On a Debian "woody" system, you will need to edit the file
+/usr/share/sgml/docbook/dtd/xml/4.1.2/docbook.cat and comment out the
+DTDDECL lines, otherwise xsltproc will choke on them.
+
+If you don't want to deal with all this, you can remove the "--nonet"
+switch in the Makefile, and xsltproc will pull the DTD from the
+Internet every time it is run.
+
+To find the XSL stylesheets, you must edit the driver files
+html-one.xsl, html-chunk.xsl, and latex.xsl. The HTML stylesheets are
+in /usr/share/sgml/docbook/stylesheet/xsl/nwalsh/html/ with the Debian
+packages and in /sw/share/xml/xsldocbook-xsl/html/ with the Fink
+packages.
+
+
+EOF

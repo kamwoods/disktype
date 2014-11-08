@@ -1,0 +1,31 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>3.3. ATARI ST</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="disktype Documentation"><link rel="up" href="ch03.html" title="Chapter 3. Recognized Formats"><link rel="prev" href="ch03s02.html" title="3.2. Apple Macintosh"><link rel="next" href="ch03s04.html" title="3.4. General PC Formats"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">3.3. ATARI ST</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch03s02.html">Prev</a> </td><th width="60%" align="center">Chapter 3. Recognized Formats</th><td width="20%" align="right"> <a accesskey="n" href="ch03s04.html">Next</a></td></tr></table><hr></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="id894675"></a>3.3. ATARI ST</h2></div></div></div><p>
+The support for ATARI ST formats is mainly aimed at users of emulators.
+As far as I can tell, the .ST disk image format is a plain sector-by-sector
+image and requires no special support.
+</p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id894687"></a>3.3.1. The GEMDOS File System</h3></div></div></div><p>
+The file system implemented by the GEMDOS layer of the TOS operating
+system is actually FAT12/FAT16 as defined by MS-DOS,
+see <a href="ch03s07.html#fmt_fat" title="3.7.1. FAT12, FAT16, and FAT32">Section 3.7.1, &#8220;FAT12, FAT16, and FAT32&#8221;</a>.
+</p><p>
+There are some slight differences. GEMDOS uses the "system identifier" field
+to store a serial number, used to detect floppy changing. For booting, a
+different branch instruction is used, and the boot sector must have a
+checksum of $1234 (computed from 16-bit words in big-endian byte order),
+instead of the $55AA marker. GEMDOS does not support
+arbitrary numbers of sectors per cluster and instead emulates larger sector
+sizes (1K, 2K, 4K) if it runs out of cluster numbers.
+<span><strong class="command">disktype</strong></span> will report the boot checksum and the unusual sector sizes, if
+found. Otherwise, the volume will report as FAT12 or FAT16 as appropriate.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id894724"></a>3.3.2. The ATARI ST (AHDI) Partitioning Scheme</h3></div></div></div><p>
+The ATARI ST has its own parititioning scheme for hard disks, although it
+is structurally very similar to the PC partition table format. The first
+sector of the disk contains boot code as well as four partition entry slots.
+If more than four partitions are required, one of the four primary
+slots is used for an "extended" partition, which contains a linked list
+of partition map sectors using the same layout.
+</p><p>
+Each partition has a type code of three characters, which <span><strong class="command">disktype</strong></span>
+displays in plain. The three codes used by the AHDI hard disk driver
+are recognized.
+</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch03s02.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch03.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch03s04.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">3.2. Apple Macintosh </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 3.4. General PC Formats</td></tr></table></div></body></html>

@@ -1,0 +1,56 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>3.6. Other Linux Formats</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="disktype Documentation"><link rel="up" href="ch03.html" title="Chapter 3. Recognized Formats"><link rel="prev" href="ch03s05.html" title="3.5. Linux File Systems"><link rel="next" href="ch03s07.html" title="3.7. Microsoft"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">3.6. Other Linux Formats</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch03s05.html">Prev</a> </td><th width="60%" align="center">Chapter 3. Recognized Formats</th><td width="20%" align="right"> <a accesskey="n" href="ch03s07.html">Next</a></td></tr></table><hr></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="id895109"></a>3.6. Other Linux Formats</h2></div></div></div><p>
+For balance, this section lists formats used on Linux that don't
+qualify as file systems.
+</p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id895119"></a>3.6.1. Linux Swap</h3></div></div></div><p>
+Linux swap partitions must be formatted before use, although the format
+is quite simple. It has just two purposes: Marking the partition as okay
+for swapping with a signature, and keeping a list of bad blocks. Both
+are kept in the very first block. The block size is the architecture's
+page size and can be 4K or 8K.
+</p><p>
+There are two formats. The old one uses a bitmap in the first block to
+mark bad sectors, which limits it to around 128 MB on 4K-page architectures.
+Luckily, bad blocks are rare nowadays -- actually, most people won't
+touch a disk with even a single bad sector with a ten-feet pole.
+The new format uses a list of block numbers instead of a bitmap, thus lifting
+the size restriction.
+</p><p>
+Note that the two formats are known under various names. Sometimes they are
+called version 0 and 1, sometimes version 1 and 2. Since the new format
+uses "SWAPSPACE2" as its signature, <span><strong class="command">disktype</strong></span> uses 1 and 2. The page size
+is determined from the position of the signature; it's at the end of the
+first page-sized block. The endianness can only be determined for the
+new (version 2) format, using the sub-version number field.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id895160"></a>3.6.2. Linux LVM Physical Volumes</h3></div></div></div><p>
+The Logical Volume Manager (LVM) allows file systems to span several
+disks and to be resized online. This works by adding real disk
+partitions (called physical volumes) to a pool (called a volume
+group). Logical volumes can be allocated from the pool in units called
+physical extents, usually 4 MB in size. The necessary mapping
+information is stored at the beginning of each physical volume, where
+it can be detected.
+</p><p>
+When <span><strong class="command">disktype</strong></span> detects a LVM1 or LVM2 physical volume, it prints
+some details on the mapping, including the volume group name. The
+actual LVM mapping data is not interpreted at this time. Still,
+<span><strong class="command">disktype</strong></span> attempts to detect any file system that happens to start
+on the first physical extent (LVM's allocation unit) of this physical
+volume.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id895197"></a>3.6.3. Linux RAID Physical Disks</h3></div></div></div><p>
+The Linux kernel includes a RAID layer implemented in software. It
+allows you to build a RAID array from commodity hardware. Recent
+revisions of Linux (i.e. 2.4.x) store all required information on the
+disks, enabling auto-detection at boot time. That feature is called
+"persistent superblocks".
+</p><p>
+The RAID superblock is stored at the end of the partition, so
+<span><strong class="command">disktype</strong></span> can only find it if the size of the partition is
+known. Actual data starts at the beginning of the device, so the file
+system on the RAID may be detected as well if you hit the first disk
+of the set.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id895226"></a>3.6.4. Debian Split Floppy</h3></div></div></div><p>
+The installation system of Debian GNU/Linux splits large files (like
+the driver module .tar.gz) over several floppies. A special header
+is put in the boot sector to allow identification of the disks.
+</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch03s05.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch03.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch03s07.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">3.5. Linux File Systems </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 3.7. Microsoft</td></tr></table></div></body></html>

@@ -1,0 +1,19 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>2.1. Byte Ordering</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="disktype Documentation"><link rel="up" href="ch02.html" title="Chapter 2. Coming To Terms"><link rel="prev" href="ch02.html" title="Chapter 2. Coming To Terms"><link rel="next" href="ch02s02.html" title="2.2. Sectors and Blocks"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">2.1. Byte Ordering</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch02.html">Prev</a> </td><th width="60%" align="center">Chapter 2. Coming To Terms</th><td width="20%" align="right"> <a accesskey="n" href="ch02s02.html">Next</a></td></tr></table><hr></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="id893616"></a>2.1. Byte Ordering</h2></div></div></div><p>
+The byte has been universally accepted as the atomic entity of data
+storage for some decades now. But beyond that, you're on your own.
+Integer numbers larger than 8 bits are stored in several bytes, and
+there the common ground ends.
+</p><p>
+In the <em class="firstterm">little endian</em> format,
+the least significant byte (LSB) is stored first.
+So the hexadecimal number $FACE would be stored as $CE $FA.
+The <em class="firstterm">big endian</em> format stores
+the most significant byte (MSB) first, resulting in $FA $CE.
+</p><p>
+Most CPUs have a preferred or native format. Data in the other format
+can only be accessed with a performance penalty. As a result, everyone
+tries to use their platform's native byte order. As you'll see later
+on, some formats are defined to use a specific byte order, while
+others can occur in either one. This will be noted as appropriate.
+</p></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch02.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch02.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch02s02.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 2. Coming To Terms </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 2.2. Sectors and Blocks</td></tr></table></div></body></html>

@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>3.9. Other Unix Flavors</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="disktype Documentation"><link rel="up" href="ch03.html" title="Chapter 3. Recognized Formats"><link rel="prev" href="ch03s08.html" title="3.8. IBM"><link rel="next" href="ch03s10.html" title="3.10. Miscellaneous Systems"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">3.9. Other Unix Flavors</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch03s08.html">Prev</a> </td><th width="60%" align="center">Chapter 3. Recognized Formats</th><td width="20%" align="right"> <a accesskey="n" href="ch03s10.html">Next</a></td></tr></table><hr></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="id895439"></a>3.9. Other Unix Flavors</h2></div></div></div><p>
+This section is something of a catch-all. Some file systems that originated
+on commercial Unix flavors were already described (IBM's JFS, for example).
+Then, there are the "generic" formats that originated from System V and BSD,
+and were adopted and adapted by commercial vendors as well as
+free projects.
+</p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id895453"></a>3.9.1. UFS</h3></div></div></div><p>
+UFS originated from BSD, and is used in various Unix flavors
+including Sun Solaris and NextStep / Mac OS X.
+</p><p>
+The different variations use block sizes of 512, 1024, or 2048 bytes,
+the latter one intended for CD media. The superblock is located
+some way into the device; <span><strong class="command">disktype</strong></span> only checks at 8K at this time.
+There are four different magic numbers for different revisions of the
+structures. The file system can be little-endian or big-endian,
+depending on the architecture of the vendor.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id895480"></a>3.9.2. BSD Disklabels</h3></div></div></div><p>
+A BSD disklabel is a partition map with some special quirks.
+While it was originally designed to cover a whole disk,
+PC-based BSD flavors usually put it inside a DOS partition
+(which they call slices to set them apart from the partitions
+defined by the disklabel).
+</p><p>
+There are 8 partition slots in a basic BSD disklabel, but not
+all of them are created equal. The slots are labeled with letters,
+starting with <code class="filename">a</code>. The first four have special
+meaning by convention. The <code class="filename">a</code> partition contains
+the root file system. It also contains the disklabel itself, which
+is possible since the UFS superblock only starts at 8K into
+the partition. The <code class="filename">b</code> partition is used for
+swap space. The <code class="filename">c</code> partition slot refers to the whole
+disk (or slice, if applicable), but has the type set to Unused (0).
+Finally, the <code class="filename">d</code> partition slot is completely unused.
+The remaining slots are used for additional file systems, e.g.
+<code class="filename">/usr</code> or <code class="filename">/var</code>.
+</p><p>
+One more quirk is that the disklabel uses absolute sector numbers,
+even if it lives inside a DOS slice. As if that wan't enough, FreeBSD
+adjusts that data on the fly if you access the device file for
+the slice. <span><strong class="command">disktype</strong></span> tries to adapt to all situations by finding
+the lowest sector number used in the label.
+</p><p>
+<span><strong class="command">disktype</strong></span> recognizes BSD disklabels by their magic number.
+Partitions that overlap with the disklabel itself are reported and
+analyzed in the right context. The data for the <code class="filename">c</code>
+partition is always reported, even if marked as unused.
+</p><p>
+At this time <span><strong class="command">disktype</strong></span> only probes the beginning of the second sector
+and assumes a sector size of 512 bytes. Apparently, the placement
+of the disklabel is different on certain architectures. I would
+appreciate any additional information on this.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id895593"></a>3.9.3. System V FS</h3></div></div></div><p>
+Like UFS, the System V file system originated in one of the
+"original" Unix strains and was adopted by many commercial flavors
+built on that code. The Linux kernel supports quite a few variants,
+including two with PDP-11 byte order. Unfortunately, some don't have
+a magic and thus can't be detected reliably. <span><strong class="command">disktype</strong></span>
+supports the Xenix and the System V R2 and R4 variants.
+</p><p>
+Information on System V file systems can be found at
+<a href="http://www.knm.org.pl/prezes/sysv.html" target="_top">http://www.knm.org.pl/prezes/sysv.html</a>, the page for
+the Linux driver.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id895625"></a>3.9.4. XFS</h3></div></div></div><p>
+XFS is SGI's high-performance file system, originally developed for IRIX.
+Like JFS, it has been open-sourced and ported to Linux.
+XFS does meta-data journalling, and even has optional real-time features.
+</p><p>
+Unlike most Unix file systems, XFS puts the superblock at the very
+beginning of the device. All data is stored in big-endian byte order.
+</p><p>
+Information on the Linux port of XFS can be found at
+<a href="http://oss.sgi.com/projects/xfs/" target="_top">http://oss.sgi.com/projects/xfs/</a>.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id895653"></a>3.9.5. Solaris SPARC Disklabel</h3></div></div></div><p>
+Solaris SPARC uses a disklabel in the BSD fashion.
+Unfortunately, I wasn't able to gather much information about it
+beyond the actual on-disk structure.
+</p><p>
+<span><strong class="command">disktype</strong></span> detects the Solaris SPARC disklabel by its magic number.
+As usual, all partitions are listed and analyzed recursively.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id895677"></a>3.9.6. Solaris x86 Disklabel</h3></div></div></div><p>
+Solaris x86 (or "Intel Platform Edition") uses a scheme similar to
+the PC BSDs. A single PC-style partition is set aside for Solaris,
+which is then sub-partitioned using a proprietary partitioning scheme.
+The scheme used in Solaris is known as VTOC. Like the BSD disklabel,
+it has a fixed number of slots, and some of them are
+allocated to fixed special purposes, like the root file system or
+the swap partition. There is also one entry that covers the whole
+PC-style partition, it is dubbed "overlap".
+</p><p>
+<span><strong class="command">disktype</strong></span> detects the Solaris x86 disklabel by its magic number.
+As usual, all partitions are listed and analyzed recursively.
+</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch03s08.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch03.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch03s10.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">3.8. IBM </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 3.10. Miscellaneous Systems</td></tr></table></div></body></html>

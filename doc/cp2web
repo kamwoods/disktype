@@ -1,0 +1,10 @@
+#!/bin/bash
+
+DESTDIR=/Users/chrisp/web/disktype/doc/
+
+cd html
+for file in *.html ; do
+  cat ../doctype.txt $file >$DESTDIR/$file
+done
+
+exit 0

@@ -1,0 +1,110 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>3.5. Linux File Systems</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="disktype Documentation"><link rel="up" href="ch03.html" title="Chapter 3. Recognized Formats"><link rel="prev" href="ch03s04.html" title="3.4. General PC Formats"><link rel="next" href="ch03s06.html" title="3.6. Other Linux Formats"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">3.5. Linux File Systems</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch03s04.html">Prev</a> </td><th width="60%" align="center">Chapter 3. Recognized Formats</th><td width="20%" align="right"> <a accesskey="n" href="ch03s06.html">Next</a></td></tr></table><hr></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="id894863"></a>3.5. Linux File Systems</h2></div></div></div><p>
+Defining what actually is a "Linux" file system is difficult. Exchange
+between Unix flavors is vivid. Some of these file systems are borrowed
+from other flavors, others have been ported from Linux to other
+systems.
+</p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id894875"></a>3.5.1. ext2 and ext3</h3></div></div></div><p>
+The ext2 file system is "the" native file system for Linux
+nowadays. There was a predecessor simply called "extended" file system,
+but support for it has long been eliminated from the Linux kernel.
+ext3 is a backwards-compatible extension that adds meta-data
+journalling.
+
+</p><p>
+ext2 is a fairly plain Unix file system, using an allocation bitmap
+and inodes. It has a superblock stored 1024 bytes into the device,
+independent of the block size used. All data is stored in
+little-endian byte order. The superblock contains some information
+not yet printed by <span><strong class="command">disktype</strong></span>, including the
+originating operating system.
+</p><p>
+Information on ext2 can be found at
+<a href="http://www.nongnu.org/ext2-doc/" target="_top">http://www.nongnu.org/ext2-doc/</a>.
+Other sources are the home page of the ext2 tools at
+<a href="http://e2fsprogs.sourceforge.net/" target="_top">http://e2fsprogs.sourceforge.net/</a>,
+and the Linux kernel source code (see <a href="ch04.html#other_linux">Chapter 4, <i>Other Sources of Information</i></a>).
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id894929"></a>3.5.2. ReiserFS</h3></div></div></div><p>
+ReiserFS was written with efficiency in mind.
+It handles large numbers of files per directory and large numbers
+of small files in general better than most traditional file systems.
+It makes extensive use of balanced trees and also provides meta-data
+journalling.
+</p><p>
+There are two major versions of the on-disk format, 3.5 and 3.6.
+ReiserFS on Linux 2.2 only supports the 3.5 format.
+Linux 2.4 ships with ReiserFS in the mainstream kernel,
+supports both formats, and is able to upgrade a file system
+on the fly to the new format. The two formats use two different magic strings
+in the superblock. A third magic string is used for non-standard journal
+sizes. (It seems this feature was added only recently and isn't actually
+supported by the mainstream Linux kernel yet.)
+In this case, the format is determined by an additional field in the
+superblock.
+</p><p>
+ReiserFS puts the superblock 64K into the device; some earlier versions
+put it 8K into the device. That allows complex boot loaders like GRUB
+
+to reside completely in the space before the actual file system.
+All data is stored in little-endian byte order.
+</p><p>
+Information on ReiserFS can be found at
+<a href="http://www.namesys.com/" target="_top">http://www.namesys.com/</a>.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id894965"></a>3.5.3. Reiser4</h3></div></div></div><p>
+Reiser4 is the successor to ReiserFS, further improving on some algorithms
+and data structures. Many aspects of Reiser4 are separate plug-ins and
+can be swapped. As a result, Reiser4 only stores a "master superblock"
+64K into the device that serves as an anchor to the rest of the file system,
+including the actual superblock. The default 4.0 format stores it in
+the following 4K block (i.e., 68K into the device).
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id894982"></a>3.5.4. Minix</h3></div></div></div><p>
+As the name suggests, the Minix format didn't originate on Linux, but on
+Minix, the PC Unix system after which Linux was modelled in its early
+days. The format is quite simple and compact, and was the preferred
+format for boot and install floppies for some time. Today, it has
+been superceded by ext2, and support for it will likely be removed
+in the next stable Linux kernel series.
+
+</p><p>
+Minix puts the superblock 1K into the device. There are two versions of
+the volume structures (most notably the inodes), and two maximum
+lengths for file names (14 or 30 chars). These parameters can be combined,
+yielding four actual formats, each with its own magic. <span><strong class="command">disktype</strong></span>
+assumes that Minix is always little-endian, but I wasn't able
+to really confirm this yet.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id895017"></a>3.5.5. romfs</h3></div></div></div><p>
+romfs is a read-only file system intended for boot disks, initial
+ramdisks and the like. It does not use compression. When used with
+initrd, it can be stored in compressed form on the boot medium and is
+decompressed in whole while loading it into the ramdisk. The code for
+romfs is quite small, which results from data structures optimized for
+the Linux kernel.
+</p><p>
+Information on romfs can be found at
+<a href="http://romfs.sourceforge.net/" target="_top">http://romfs.sourceforge.net/</a>.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id895044"></a>3.5.6. cramfs</h3></div></div></div><p>
+cramfs is a read-only file system intended for boot disks, initial
+ramdisks and the like. It improves on romfs by using compression
+within the file system. Decompression happens block by block as file
+data is accessed.
+</p><p>
+cramfs uses the native byte order and page size of each architecture,
+but doesn't store these parameters in the
+superblock. <span><strong class="command">disktype</strong></span> determines the byte
+order from the magic number field, but the page size can only be guessed at.
+The superblock can start at the beginning of the device,
+or after one unused sector of 512 bytes.
+</p><p>
+Information on cramfs can be found at
+<a href="http://sourceforge.net/projects/cramfs/" target="_top">http://sourceforge.net/projects/cramfs/</a>.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id895081"></a>3.5.7. squashfs</h3></div></div></div><p>
+squashfs is a read-only file system intended for boot disks, initial
+ramdisks and the like, currently under development. It tries to pack
+data really tight, without padding. A squashfs file system can occur
+with both byte orders, and the current Linux driver can use both,
+independent of the running architecture. The byte order can be
+determined from the magic number.
+</p><p>
+Information on squashfs can be found at
+<a href="http://squashfs.sourceforge.net/" target="_top">http://squashfs.sourceforge.net/</a>.
+</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch03s04.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch03.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch03s06.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">3.4. General PC Formats </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 3.6. Other Linux Formats</td></tr></table></div></body></html>

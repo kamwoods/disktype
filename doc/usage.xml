@@ -1,0 +1,182 @@
+<chapter>
+<title>Installation and Usage</title>
+
+<para>
+The purpose of &disktype; is to detect the content format of a disk or disk image.
+It knows about common file systems, partition tables, and boot codes.
+</para>
+<para>
+The program is written in C and is designed to compile on any modern Unix flavour.
+It is self-contained and in general works without special libraries or headers.
+Some system-dependent features can be used to gather additional information.
+</para>
+
+<section>
+<title>Installation</title>
+<para>
+GNU make is required to build &disktype;.
+The <filename>Makefile</filename>
+is set up to use GCC, but &disktype; should compile with any C compiler.
+To change the compiler, you can edit the <filename>Makefile</filename>
+or set the standard variables CC, CPPFLAGS, CFLAGS, LDFLAGS, and LIBS from
+the <command>make</command> command line.
+</para>
+<para>
+The <filename>Makefile</filename> uses <command>uname</command>
+to determine the system type
+and enables certain system-dependent features based on that.
+If you run into problems, you can disable all system-dependent features
+by setting the variable NOSYS, as in <userinput>make NOSYS=1</userinput>.
+</para>
+<para>
+Running <userinput>make</userinput> results in the binary <filename>disktype</filename>.
+Copy it to a <filename>bin</filename>
+directory of your choice, optionally stripping it on the way. That's all.
+</para>
+</section>
+
+<section>
+<title>Usage</title>
+<para>
+The <filename>disktype</filename> program can be run with any number of regular files or
+device special files as arguments. They will be analyzed in the order
+given, and the results printed to standard output. There are no
+switches in this version. Note that running disktype on device files
+like your hard disk will likely require root rights.
+</para>
+</section>
+<!-- http://physics.nist.gov/cuu/Units/binary.html -->
+
+
+<section>
+<title>Usage Examples</title>
+<para>
+These usage examples use Linux device names. See the next section
+for a guide to device names on different systems.
+</para>
+
+<para>
+Analyzing a CD image:
+<userinput>disktype debian-30r0-i386-binary-1_NONUS.iso</userinput>
+</para>
+<para>
+Analyzing the first IDE hard disk:
+<userinput>disktype /dev/hda</userinput>
+</para>
+<para>
+Analyzing a CD or DVD:
+<userinput>disktype /dev/cdrom</userinput>
+</para>
+<para>
+Analyzing a floppy:
+<userinput>disktype /dev/fd0</userinput>
+</para>
+
+</section>
+
+
+<section>
+<title>Device Naming</title>
+<para>
+All operating systems offer raw access to storage devices in some way,
+but the actual conventions vary widely.
+The following table tries to provide a reference.
+</para>
+
+<table frame="topbot"><title>Device Name Examples</title>
+<tgroup cols="8" align="left"><!--  colsep="1" rowsep="1" -->
+<colspec colname="os" />
+<colspec colname="floppy" />
+<colspec colname="idedisk" />
+<colspec colname="idecd" />
+<colspec colname="scsidisk" />
+<colspec colname="scsicd" />
+<colspec colname="partition" />
+<colspec colname="notes" />
+<thead>
+<row valign="bottom">
+  <entry>System</entry>
+  <entry>Floppy Drive</entry>
+  <entry>IDE Hard Disks</entry>
+  <entry>IDE CD-ROMs</entry>
+  <entry>SCSI Hard Disks</entry>
+  <entry>SCSI CD-ROMs</entry>
+  <entry>Partition Suffixes</entry>
+  <entry>Notes</entry>
+</row>
+</thead>
+<tbody valign="top">
+
+<row>
+  <entry>Linux (traditional)</entry>
+  <entry><simplelist><member>/dev/fd0</member><member>/dev/fd1</member></simplelist></entry>
+  <entry namest="idedisk" nameend="idecd"><simplelist><member>/dev/hda</member><member>/dev/hdb</member><member>/dev/hdc</member><member>(fixed by location on bus)</member></simplelist></entry>
+  <entry><simplelist><member>/dev/sda</member><member>/dev/sdb</member><member>/dev/sdc</member></simplelist></entry>
+  <entry><simplelist><member>/dev/scd0</member><member>/dev/scd1</member><member>/dev/scd2</member></simplelist></entry>
+  <entry><simplelist><member>1</member><member>2</member><member>3</member></simplelist></entry>
+</row>
+
+<row>
+  <entry>Mac&nbsp;OS&nbsp;X / Darwin</entry>
+  <entry namest="floppy" nameend="scsicd"><simplelist><member>/dev/rdisk0</member><member>/dev/rdisk1</member><member>/dev/rdisk2</member></simplelist></entry>
+  <entry><simplelist><member>s1</member><member>s2</member><member>s3</member></simplelist></entry>
+</row>
+
+<row>
+  <entry>FreeBSD</entry>
+  <entry><simplelist><member>/dev/fd0</member><member>/dev/fd1</member></simplelist></entry>
+  <entry><simplelist><member>/dev/ad0</member><member>/dev/ad1</member><member>/dev/ad2</member></simplelist></entry>
+  <entry><simplelist><member>/dev/acd0</member><member>/dev/acd1</member><member>/dev/acd2</member></simplelist></entry>
+  <entry><simplelist><member>/dev/da0</member><member>/dev/da1</member><member>/dev/da2</member></simplelist></entry>
+  <entry><simplelist><member>/dev/cd0</member><member>/dev/cd1</member><member>/dev/cd2</member></simplelist></entry>
+  <entry><simplelist type="vert" columns="2"><member>s1</member><member>s2</member><member>s3</member><member>s4</member><member>(DOS style)</member><member>a</member><member>b</member><member>e</member><member>f</member><member>(disklabel)</member></simplelist></entry>
+  <entry>a)</entry>
+</row>
+
+<row>
+  <entry>Cygwin (Windows names)</entry>
+  <entry><simplelist><member>\\.\A:</member><member>\\.\B:</member></simplelist></entry>
+  <entry><simplelist><member>\\.\PHYSICALDRIVE0</member><member>\\.\PHYSICALDRIVE1</member><member>\\.\PHYSICALDRIVE2</member></simplelist></entry>
+  <entry><simplelist><member>\\.\E:</member><member>(corresponding drive letter)</member></simplelist></entry>
+  <entry><simplelist><member>\\.\PHYSICALDRIVE0</member><member>\\.\PHYSICALDRIVE1</member><member>\\.\PHYSICALDRIVE2</member></simplelist></entry>
+  <entry><simplelist><member>\\.\E:</member><member>(corresponding drive letter)</member></simplelist></entry>
+  <entry>(use drive letters)</entry>
+  <entry>b)</entry>
+</row>
+<row>
+  <entry>Cygwin (POSIX names)</entry>
+  <entry><simplelist><member>/dev/fd0</member><member>/dev/fd1</member></simplelist></entry>
+  <entry><simplelist><member>/dev/sda</member><member>/dev/sdb</member><member>/dev/sdc</member></simplelist></entry>
+  <entry><simplelist><member>/dev/scd0</member><member>/dev/scd1</member><member>/dev/scd2</member></simplelist></entry>
+  <entry><simplelist><member>/dev/sda</member><member>/dev/sdb</member><member>/dev/sdc</member></simplelist></entry>
+  <entry><simplelist><member>/dev/scd0</member><member>/dev/scd1</member><member>/dev/scd2</member></simplelist></entry>
+  <entry><simplelist><member>1</member><member>2</member><member>3</member></simplelist></entry>
+  <entry>b)</entry>
+</row>
+
+</tbody>
+</tgroup>
+</table>
+
+<para>Notes:</para>
+
+<para>a)
+On FreeBSD, a BSD disklabel may be contained in a DOS partition.
+In this case, the corresponding suffixes are combined. For example,
+the swap partition in a BSD disklabel on the first DOS partition
+would be <filename>/dev/ad0s1b</filename>.
+</para>
+
+<para>b)
+Cygwin does not distinguish IDE and SCSI drives; such details are
+already taken care of by the Windows kernel.
+The backslashes must be quoted when entered at a shell prompt,
+e.g. <userinput>disktype '\\.\C:'</userinput>.
+For more information on raw device access in Cygwin, see
+<ulink url="http://sources.redhat.com/cygwin/cygwin-ug-net/using-specialnames.html" />.
+</para>
+
+</section>
+
+
+</chapter>

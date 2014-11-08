@@ -1,0 +1,36 @@
+#!/bin/sh
+set -e
+if [ $# -gt 0 ]; then
+  for spec in $@ ; do
+    zimage=""
+    case $spec in
+      *.image.gz)
+        zimage=$spec
+        image=`basename $zimage .gz`
+        ;;
+      *.image)
+        image=$spec
+        zimage=$image.gz
+	;;
+    esac
+    if [ -n "$zimage" -a -f "$zimage" ]; then
+      if [ ! -f $image -o $zimage -nt $image ]; then
+        echo "Decompressing $image"
+        rm -f $image
+        gzip -dc $zimage >$image
+      fi
+    fi
+  done
+else
+  for zimage in *.image.gz ; do
+    if [ -f "$zimage" ]; then
+      image=`basename $zimage .gz`
+      if [ ! -f $image -o $zimage -nt $image ]; then
+        echo "Decompressing $image"
+        rm -f $image
+        gzip -dc $zimage >$image
+      fi
+    fi
+  done
+fi
+exit 0

@@ -1,0 +1,59 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>3.7. Microsoft</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="disktype Documentation"><link rel="up" href="ch03.html" title="Chapter 3. Recognized Formats"><link rel="prev" href="ch03s06.html" title="3.6. Other Linux Formats"><link rel="next" href="ch03s08.html" title="3.8. IBM"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">3.7. Microsoft</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch03s06.html">Prev</a> </td><th width="60%" align="center">Chapter 3. Recognized Formats</th><td width="20%" align="right"> <a accesskey="n" href="ch03s08.html">Next</a></td></tr></table><hr></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="id895243"></a>3.7. Microsoft</h2></div></div></div><p>
+Microsoft's formats are quite a phenomenon. Despite obvious mis-design
+-- missing unique identification signatures and the need for excessive
+calculations, for example -- the FAT formats have established
+themselves as standards for cross-system interchange.
+</p><p>
+All formats described in this section originated on the x86 platform
+and are little-endian.
+</p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="fmt_fat"></a>3.7.1. FAT12, FAT16, and FAT32</h3></div></div></div><p>
+This family of formats has a long history. They were introduced by
+MS-DOS and are still supported and used today in all versions of MS
+Windows. The format also managed to establish itself as the common
+denominator for disk interchange, and as a result is supported by
+virtually every operating system on the planet.
+</p><p>
+FAT stands for File Allocation Table, a central structure in
+the file system. It acts as an allocation bitmap, but also stores
+which clusters belong to a certain file using linked lists. As the
+names indicate, there are variants with entry sizes of 12, 16 and 32
+bits.
+</p><p>
+One unique feature of the FAT file systems is that they are hard to
+identify. The first sector is called the "boot sector". It contains
+some parameters at the beginning; the rest of the sector is used for
+boot code. Identification is only possible through consistency checks
+of these parameters. Since the format is quite flexible,
+<span><strong class="command">disktype</strong></span> only uses some of these as "hard"
+tests, and uses the rest to calculate a "hints score". For example,
+there is a two-byte signature at the end of the boot sector that is
+used by PC BIOSes to check for a bootable disk. It is entirely
+possible to encounter an otherwise valid FAT file system in the wild
+that lacks this signature, though.
+</p><p>
+To make the situation even worse, some other PC formats, including
+Microsoft's own NTFS, seem to use the same parameter block in the boot
+sector, for compatibility with PC
+BIOSes. <span><strong class="command">disktype</strong></span> tries to avoid it, but it
+may still misidentify one of these as a FAT file system. Hopefully the
+"hints score" will help you identify such situations.
+</p><p>
+Official information on the FAT family can be found at
+<a href="http://www.microsoft.com/hwdev/hardware/fatgendown.asp" target="_top">http://www.microsoft.com/hwdev/hardware/fatgendown.asp</a>.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id895331"></a>3.7.2. NTFS</h3></div></div></div><p>
+NTFS is the file system used by Microsoft in the Windows NT range of
+operating systems (Windows NT, Windows 2000, Windows XP). It is much
+better designed than FAT was, and supports features like extended
+attributes and n-fork files.
+</p><p>
+<span><strong class="command">disktype</strong></span> uses a signature in the "system
+identifier" field of the boot sector to identify NTFS. I can only hope
+this really is a signature and not just a coincidence that no one
+cared to change over the years. <span><strong class="command">disktype</strong></span>
+also checks some other parameters in the boot sector, but those are
+shared with the FAT file system family...
+</p><p>
+Some information on NTFS is available from the Linux-NTFS project at
+<a href="http://linux-ntfs.sourceforge.net/" target="_top">http://linux-ntfs.sourceforge.net/</a>.
+</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch03s06.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch03.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch03s08.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">3.6. Other Linux Formats </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 3.8. IBM</td></tr></table></div></body></html>

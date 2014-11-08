@@ -1,0 +1,248 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/transitional.dtd">
+<html>
+<head>
+<title>disktype - disk format detection</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+<body bgcolor="#ffffff">
+
+<table align="right" border="0" cellspacing="0" cellpadding="3">
+<tr><td>&nbsp;</td><td align="center" bgcolor="#f0f0f0">
+Hosted by<br>
+<a href="http://sourceforge.net"><img
+src="http://sflogo.sourceforge.net/sflogo.php?group_id=73677&amp;type=1" width="88"
+height="31" border="0" hspace="2" vspace="2" alt="SourceForge.net Logo"></a>
+</td></tr>
+</table>
+
+<h1 align="center">disktype</h1>
+<hr>
+
+
+<p>
+The purpose of <tt>disktype</tt> is to detect the content format of a disk or
+disk image. It knows about common file systems, partition tables, and
+boot codes.
+</p>
+<p>
+The program is written in C and is designed to compile on any modern
+Unix flavour<sup><a href="#fn1">1</a></sup>.
+It is self-contained and in general works without
+special libraries or headers. Some system-dependent features can be
+used to gather additional information.
+</p>
+
+
+<p align="center"><br>On this page:
+<a href="#download">Download</a>
+- <a href="#rsrc">Resources</a>
+- <a href="#formats">Recognized Formats</a>
+- <a href="#links">Related Software</a>
+<br>Other pages:
+<a href="doc/">Documentation</a>
+- <a href="fss/">File System Sampler</a>
+</p>
+
+
+<h2><a name="download"></a>Download</h2>
+
+<p>
+Download the source tarball here:
+</p>
+
+<ul>
+<li><a href="http://prdownloads.sourceforge.net/disktype/disktype-9.tar.gz?download">disktype 9</a> (44K)</li>
+</ul>
+
+<p>
+No precompiled binaries are available at this time. Compiling
+<tt>disktype</tt> is simple and straightforward, so I don't see this
+as a great loss.
+If you want to build packages for your favourite distribution,
+please go ahead and let me know so I can list them here.
+</p>
+<p>
+Juan Manuel Garcia Molina has made a package for
+<a href="http://www.debian.org/">Debian GNU/Linux</a>,
+currently available in the unstable and testing trees.
+A <a href="http://fink.sourceforge.net/">Fink</a> package is avaliable
+in the unstable tree.
+Solaris packages maintained by Dagobert Michelsen are available at
+<a href="http://www.opencsw.org/packages/disktype/">OpenCSW</a>.
+</p>
+<p>
+The <a href="doc/">documentation</a> is still evolving and therefore
+not included with the source code. You can <a href="doc/">read it
+online</a> instead.
+</p>
+
+
+<h2><a name="rsrc"></a>Resources</h2>
+
+<p>
+This project is hosted by SourceForge.
+You can use the trackers to submit
+<a href="http://sourceforge.net/tracker/?atid=538538&amp;group_id=73677&amp;func=browse">bug reports</a>,
+<a href="http://sourceforge.net/tracker/?atid=538541&amp;group_id=73677&amp;func=browse">feature requests</a>,
+and <a href="http://sourceforge.net/tracker/?atid=538540&amp;group_id=73677&amp;func=browse">patches</a>.
+The latest development source is available from the
+<a href="http://sourceforge.net/cvs/?group_id=73677">CVS repository</a>.
+Other resources are listed on the
+<a href="http://sourceforge.net/projects/disktype/">project summary</a> page.
+</p>
+
+
+<h2><a name="formats"></a>Recognized Formats</h2>
+
+<p>
+As of version 9, <tt>disktype</tt> knows about the following formats.
+For more detailed information, please see the
+<a href="doc/">documentation</a>.
+</p>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+<tr valign="top" align="left"><td width="30%">
+
+<p>
+File systems:
+</p>
+<ul>
+<li>FAT12/FAT16/FAT32</li>
+<li>NTFS</li>
+<li>HPFS</li>
+<li>MFS, HFS, HFS Plus</li>
+<li>ISO9660 (incl. Joliet, El Torito)</li>
+<li>UDF</li>
+<li>ext2/ext3</li>
+<li>Minix</li>
+<li>ReiserFS</li>
+<li>Reiser4</li>
+<li>Linux romfs</li>
+<li>Linux cramfs</li>
+<li>Linux squashfs</li>
+<li>UFS (some variations)</li>
+<li>SysV FS (some variations)</li>
+<li>JFS</li>
+<li>XFS</li>
+<li>Amiga FS/FFS</li>
+<li>Amiga SFS</li>
+<li>Amiga PFS</li>
+<li>BeOS BFS</li>
+<li>QNX4 FS</li>
+<li>3DO CD-ROM FS</li>
+<li>Veritas VxFS</li>
+<li>Xbox DVD file system</li>
+</ul>
+
+</td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td width="30%">
+
+<p>
+Partitioning:
+</p>
+<ul>
+<li>DOS/PC style</li>
+<li>EFI GPT</li>
+<li>Apple</li>
+<li>Amiga "Rigid Disk"</li>
+<li>ATARI ST (AHDI3)</li>
+<li>BSD disklabel</li>
+<li>Linux RAID physical disks</li>
+<li>Linux LVM1 physical volumes</li>
+<li>Linux LVM2 physical volumes</li>
+<li>Solaris SPARC disklabel</li>
+<li>Solaris x86 disklabel (vtoc)</li>
+</ul>
+
+<p>
+Other structures:
+</p>
+<ul>
+<li>Debian split floppy header</li>
+<li>Linux swap</li>
+</ul>
+
+<p>
+Disk images:
+</p>
+<ul>
+<li>Raw CD image (.bin)</li>
+<li>Virtual PC hard disk image</li>
+<li>Apple UDIF disk image (limited)</li>
+<li>Linux cloop (limited)</li>
+</ul>
+
+</td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td width="30%">
+
+<p>
+Boot loaders:
+</p>
+<ul>
+<li>LILO</li>
+<li>GRUB</li>
+<li>SYSLINUX</li>
+<li>ISOLINUX</li>
+<li>Linux kernel</li>
+<li>FreeBSD loader</li>
+<li>Windows/MS-DOS loader</li>
+<li>BeOS loader, Haiku loader</li>
+<li>Sega Dreamcast</li>
+</ul>
+
+<p>
+Compression formats:
+</p>
+<ul>
+<li>gzip</li>
+<li>compress</li>
+<li>bzip2</li>
+</ul>
+
+<p>
+Archive formats:
+</p>
+<ul>
+<li>tar</li>
+<li>cpio</li>
+<li>bar</li>
+<li>dump/restore</li>
+</ul>
+
+</td></tr>
+</table>
+
+
+<h2><a name="links"></a>Related Software</h2>
+
+<p>
+If you're looking for recovery software, try
+<a href="http://www.stud.uni-hannover.de/user/76201/gpart/">gpart</a>.
+It scans the whole disk, sector by sector, to reconstruct the
+(PC-style) partition table.
+</p>
+<p>
+The <a href="http://www.darwinsys.com/freeware/file.html">file</a>
+command identifies a wide range of file formats using magic
+numbers. It recognizes archive and compression formats, and also some
+file systems.
+</p>
+<p>
+<a href="http://www.gnu.org/software/parted/">GNU Parted</a>
+is a tool to manage partitions. It is capable of resizing certain file
+systems and can detect some others, too.
+</p>
+
+
+<p>&nbsp;</p>
+
+<p>
+<sup><a name="fn1"></a>1)</sup>
+So far it has been compiled on Linux, FreeBSD, NetBSD,
+Mac&nbsp;OS&nbsp;X/Darwin,
+BeOS, QNX, Solaris, HP/UX, and Cygwin.
+</p>
+
+
+
+<p>&nbsp;</p>
+</body>
+</html>

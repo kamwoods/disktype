@@ -1,0 +1,23 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>2.2. Sectors and Blocks</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="disktype Documentation"><link rel="up" href="ch02.html" title="Chapter 2. Coming To Terms"><link rel="prev" href="ch02s01.html" title="2.1. Byte Ordering"><link rel="next" href="ch02s03.html" title="2.3. Drive Geometry Cruft"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">2.2. Sectors and Blocks</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch02s01.html">Prev</a> </td><th width="60%" align="center">Chapter 2. Coming To Terms</th><td width="20%" align="right"> <a accesskey="n" href="ch02s03.html">Next</a></td></tr></table><hr></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="id893652"></a>2.2. Sectors and Blocks</h2></div></div></div><p>
+Mass storage devices (hard disks, CD-ROMs, tapes)
+operate on chunks of data, usually called
+<em class="firstterm">sectors</em>. The size of these device sectors varies,
+but is fixed for any
+one device. Hard disks and floppies usually use 512 bytes, while data CDs
+and DVDs use 2048 bytes. Today, it is customary to number all sectors sequentially
+and leave the details to the device.
+</p><p>
+File systems also operate on chunks at a time, but they don't need to
+be the same size as the device's sectors. The chunks used by the file
+system are usually called <em class="firstterm">blocks</em>, but <em class="firstterm">cluster</em>, <em class="firstterm">allocation block</em>, and
+<em class="firstterm">allocation unit</em> are also common.
+</p><p>
+With large block sizes, small files have a large overhead.
+Some file systems were extended to compensate for this.
+One strategy is called <em class="firstterm">tail packing</em>,
+another one divides blocks further into equally-sized
+<em class="firstterm">fragments</em>. The effect is the same:
+pieces of data from several files are packed into a single block,
+improving efficiency.
+</p></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch02s01.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch02.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch02s03.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">2.1. Byte Ordering </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 2.3. Drive Geometry Cruft</td></tr></table></div></body></html>
