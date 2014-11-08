@@ -25,7 +25,7 @@ ifeq ($(NOSYS),)
   endif
   ifeq ($(system),FreeBSD)
     # not entirely tested yet
-    #CPPFLAGS += -DUSE_IOCTL_FREEBSD
+    CPPFLAGS += -DUSE_IOCTL_FREEBSD
   endif
   ifeq ($(system),Darwin)
     CPPFLAGS += -DUSE_MACOS_TYPE -DUSE_IOCTL_DARWIN

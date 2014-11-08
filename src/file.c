@@ -37,6 +37,7 @@
 
 #ifdef USE_IOCTL_FREEBSD
 #include <sys/disklabel.h>
+#include <sys/disk.h>
 #endif
 
 #ifdef USE_IOCTL_DARWIN
@@ -94,6 +95,7 @@ SOURCE *init_file_source(int fd, int filekind)
    * lseek() to the end:
    * Works on files. On some systems (Linux), this also works on devices.
    */
+#ifndef USE_IOCTL_FREEBSD
   if (!fs->c.size_known) {
     result = lseek(fd, 0, SEEK_END);
 #if DEBUG_SIZE
@@ -104,6 +106,7 @@ SOURCE *init_file_source(int fd, int filekind)
       fs->c.size = result;
     }
   }
+#endif
 
 #ifdef USE_IOCTL_LINUX
   /*
@@ -154,6 +157,11 @@ SOURCE *init_file_source(int fd, int filekind)
 #endif
     }
   }
+  if (!fs->c.size_known && filekind)
+    if (!ioctl(fd, DIOCGMEDIASIZE, &result)) {
+      fs->c.size_known = 1;
+      fs->c.size = result;
+    }
 #endif
 
 #ifdef USE_IOCTL_DARWIN
