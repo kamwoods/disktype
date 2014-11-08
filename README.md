@@ -1,8 +1,11 @@
 disktype: Disk Format Detection
 ---------------------------------------------------------------------------------------------------
 
-* Note! I created this fork to simplify access to a patched, updated version of disktype. You can find 
-  Christoph Pfisterer's official repository and documentation at http://disktype.sourceforge.net/
+* Note! I created this fork to simplify access to a patched, updated version of disktype. The current
+  version of the fork applies the unattended-to Atari and BSD patches from the official respository,
+  and adds ext4 support.
+
+  You can find Christoph Pfisterer's official repository and documentation at http://disktype.sourceforge.net/
 
 # Introduction 
 
