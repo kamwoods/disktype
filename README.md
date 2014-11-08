@@ -1,7 +1,7 @@
 disktype: Disk Format Detection
 ---------------------------------------------------------------------------------------------------
 
-* Note! This is a fork of disktype created to address my own devlopment needs. You can find 
+* Note! I created this fork to simplify access to a patched, updated version of disktype. You can find 
   Christoph Pfisterer's official repository and documentation at http://disktype.sourceforge.net/
 
 # Introduction 
