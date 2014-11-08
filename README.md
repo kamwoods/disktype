@@ -1,7 +1,7 @@
-$Id: README,v 1.17 2006/06/05 07:57:51 chrisp Exp $   -*- text -*-
+disktype: A disk format detection tool
+---------------------------------------------------------------------------------------------------
 
- disktype 9
-============
+# Introduction
 
 The purpose of disktype is to detect the content format of a disk or
 disk image. It knows about common file systems, partition tables, and
@@ -13,8 +13,7 @@ special libraries or headers. Some system-dependent features can be
 used to gather additional information.
 
 
- Installation
---------------
+# Installation
 
 GNU make is required to build disktype. The Makefile is set up to use
 GCC, but disktype should compile with any C compiler. To change the
@@ -37,8 +36,7 @@ distribution, please also include the README, HISTORY, TODO, and
 LICENSE files in a place like /usr/share/doc/disktype.
 
 
- Usage
--------
+# Usage
 
 The 'disktype' program can be run with any number of regular files or
 device special files as arguments. They will be analyzed in the order
@@ -50,8 +48,7 @@ See the online documentation at <http://disktype.sourceforge.net/doc/>
 for some example command lines.
 
 
- Recognized Formats
---------------------
+# Recognized Formats
 
 The following formats are recognized by this version of disktype.
 
@@ -93,8 +90,7 @@ See the online documentation at <http://disktype.sourceforge.net/doc/>
 for more details on the supported formats and their quirks.
 
 
- Future Plans
---------------
+# Future Plans
 
 To fulfill its purpose, disktype needs to know about as much formats
 as possible. If you know a file system not yet included and can
@@ -103,5 +99,3 @@ provide me with (pointers to) format information, please contact me at
 disk image formats (e.g. used by backup apps or CD mastering
 software).
 
-
-EOF
