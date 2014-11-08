@@ -100,6 +100,3 @@ Added other structures: Linux cloop (detection only), EFI GPT,
 Improved file systems: Amiga FS/FFS, Amiga PFS, Linux squashfs.
 Improved other structures: Amiga "Rigid Disk" partitioning, LILO,
   ISO9660 El Torito.
-
-
-EOF
