@@ -1,0 +1,50 @@
+--- Makefile.orig	2006-01-12 20:55:15.000000000 +0300
++++ Makefile	2009-10-01 21:42:28.000000000 +0400
+@@ -25,7 +25,7 @@
+   endif
+   ifeq ($(system),FreeBSD)
+     # not entirely tested yet
+-    #CPPFLAGS += -DUSE_IOCTL_FREEBSD
++    CPPFLAGS += -DUSE_IOCTL_FREEBSD
+   endif
+   ifeq ($(system),Darwin)
+     CPPFLAGS += -DUSE_MACOS_TYPE -DUSE_IOCTL_DARWIN
+--- file.c.orig	2003-06-01 16:45:47.000000000 +0400
++++ file.c	2009-10-01 21:48:47.000000000 +0400
+@@ -37,6 +37,7 @@
+ 
+ #ifdef USE_IOCTL_FREEBSD
+ #include <sys/disklabel.h>
++#include <sys/disk.h>
+ #endif
+ 
+ #ifdef USE_IOCTL_DARWIN
+@@ -94,6 +95,7 @@
+    * lseek() to the end:
+    * Works on files. On some systems (Linux), this also works on devices.
+    */
++#ifndef USE_IOCTL_FREEBSD
+   if (!fs->c.size_known) {
+     result = lseek(fd, 0, SEEK_END);
+ #if DEBUG_SIZE
+@@ -104,6 +106,7 @@
+       fs->c.size = result;
+     }
+   }
++#endif
+ 
+ #ifdef USE_IOCTL_LINUX
+   /*
+@@ -154,6 +157,11 @@
+ #endif
+     }
+   }
++  if (!fs->c.size_known && filekind)
++    if (!ioctl(fd, DIOCGMEDIASIZE, &result)) {
++      fs->c.size_known = 1;
++      fs->c.size = result;
++    }
+ #endif
+ 
+ #ifdef USE_IOCTL_DARWIN
+
