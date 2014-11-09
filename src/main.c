@@ -57,6 +57,7 @@ static void show_macos_type(const char *filename);
 int main(int argc, char *argv[])
 {
   int i;
+  libewf_error_t *ewf_error = NULL;
 
   /* argument check */
   if (argc < 2) {
@@ -71,7 +72,7 @@ int main(int argc, char *argv[])
     analyze_file(argv[i]);
 #endif
 #ifdef USE_LIBEWF
-   if (libewf_check_file_signature(argv[i]) == 1) {
+   if (libewf_check_file_signature(argv[i], &ewf_error) == 1) {
      print_line(0, "EWF image");
      analyze_ewf(&argv[i], argc-i);
      return 0;
