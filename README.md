@@ -96,12 +96,9 @@ See the online documentation at <http://disktype.sourceforge.net/doc/>
 for more details on the supported formats and their quirks.
 
 
-# Future Plans
+# Maintenance and Planned Updates
 
-To fulfill its purpose, disktype needs to know about as much formats
-as possible. If you know a file system not yet included and can
-provide me with (pointers to) format information, please contact me at
-<chrisp@users.sourceforge.net>. I'm also looking for information on
-disk image formats (e.g. used by backup apps or CD mastering
-software).
+This fork of disktype is intended to address ongoing community needs.
+If you find a file system or disk image that it doesn't currently
+cover, please add a comment as an "Issue" in this repository.
 
