@@ -86,73 +86,74 @@ static SOURCE *init_ewf_source(char * const filenames[], uint16_t file_amount)
 
   if (src == NULL)
     bailout("Out of memory");
-    memset(src, 0, sizeof(EWF_SOURCE));
+    
+  memset(src, 0, sizeof(EWF_SOURCE));
 
-    //src->e = libewf_open(filenames, file_amount, LIBEWF_OPEN_READ);
-    //if (src->e == NULL)
-    //  bailout("Can't open EWF file");
+  //src->e = libewf_open(filenames, file_amount, LIBEWF_OPEN_READ);
+  //if (src->e == NULL)
+  //  bailout("Can't open EWF file");
 
 /* New EWF section */
-    if ( libewf_handle_open (
-           src->e,
-           filenames, 
-           file_amount, 
-           LIBEWF_OPEN_READ,
-           NULL ) != 1 )
-    {
-      bailout("Failed to open EWF handle");
-    }
+  if ( libewf_handle_open (
+         src->e,
+         filenames, 
+         file_amount, 
+         LIBEWF_OPEN_READ,
+         NULL ) != 1 )
+  {
+    bailout("Failed to open EWF handle");
+  }
 
 /**/
 
-    src->c.size_known = 1;
+  src->c.size_known = 1;
 
 #if defined( LIBEWF_STRING_DIGEST_HASH_LENGTH_MD5 )
     //src->c.size = libewf_get_media_size(src->e);
-    if ( libewf_handle_get_media_size (
-           src->e,
-           &src_size,
-           NULL ) !=1 )
-    {
-      src->c.size = 0;
-    }
-    else
-    {
-      src->c.size = src_size;
-    }
-    src->c.blocksize = libewf_get_bytes_per_sector(src->e);
+  if ( libewf_handle_get_media_size (
+         src->e,
+         &src_size,
+         NULL ) !=1 )
+  {
+    src->c.size = 0;
+  }
+  else
+  {
+    src->c.size = src_size;
+  }
+  src->c.blocksize = libewf_get_bytes_per_sector(src->e);
 #else
-    if( libewf_handle_get_media_size( 
-          src->e, 
-          &src_size,
-          NULL ) != 1 )
-    {
-      src->c.size = 0;
+  if( libewf_handle_get_media_size( 
+        src->e, 
+        &src_size,
+        NULL ) != 1 )
+  {
+    src->c.size = 0;
       //bailout("Unable to get media size of EWF file");
-    }
-    else
-    {
-      src->c.size = src_size;
-    }
-    if( libewf_handle_get_bytes_per_sector( 
-          src->e, 
-          &src_blocksize,
-          NULL ) != 1 )
-    {
-      // TODO: put a default in somewhere
-      //src->c.blocksize = DEFAULT_SECTOR_SIZE;
-      bailout("Unable to get sector size of EWF file");
-    }
-    else
-    {
-      src->c.blocksize = src_blocksize;
-    }
+  }
+  else
+  {
+    src->c.size = src_size;
+  }
+  if( libewf_handle_get_bytes_per_sector( 
+        src->e, 
+        &src_blocksize,
+        NULL ) != 1 )
+  {
+    // TODO: put a default in somewhere
+    //src->c.blocksize = DEFAULT_SECTOR_SIZE;
+    bailout("Unable to get sector size of EWF file");
+  }
+  else
+  {
+    src->c.blocksize = src_blocksize;
+  }
 #endif
 
-    src->c.read_block = read_block_ewf;
-    src->c.close = close_ewf;
+  src->c.read_block = read_block_ewf;
+  src->c.close = close_ewf;
 
- return (SOURCE *)src;
+  return (SOURCE *)src;
 }
 
 /*
