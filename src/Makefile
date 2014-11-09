@@ -9,7 +9,7 @@ OBJS   = main.o lib.o \
          buffer.o file.o cdaccess.o cdimage.o vpc.o compressed.o \
          detect.o apple.o amiga.o atari.o dos.o cdrom.o \
          linux.o unix.o beos.o archives.o \
-         udf.o blank.o cloop.o ewf.o
+         udf.o blank.o cloop.o
 
 TARGET = disktype
 
@@ -41,11 +41,6 @@ ifeq ($(NOSYS),)
     CFLAGS   += -m68020-60 -msmall-code
     LDFLAGS  += -m68020-60
   endif
-endif
-
-ifneq ($(LIBEWF),)
-  CPPFLAGS += -DUSE_LIBEWF
-  LIBS     += -lewf
 endif
 
 # real making

@@ -27,10 +27,6 @@
 
 #include "global.h"
 
-#ifdef USE_LIBEWF
-#include <libewf.h>
-#endif
-
 #ifdef USE_MACOS_TYPE
 #include <CoreServices/CoreServices.h>
 #endif
@@ -41,10 +37,6 @@
 
 static void analyze_file(const char *filename);
 static void print_kind(int filekind, u8 size, int size_known);
-
-#ifdef USE_LIBEWF
-void analyze_ewf(char * const filenames[], uint16_t file_amount);
-#endif
 
 #ifdef USE_MACOS_TYPE
 static void show_macos_type(const char *filename);
@@ -67,19 +59,7 @@ int main(int argc, char *argv[])
   /* loop over filenames */
   print_line(0, "");
   for (i = 1; i < argc; i++) {
-#ifndef USE_LIBEWF
     analyze_file(argv[i]);
-#endif
-#ifdef USE_LIBEWF
-   if (libewf_check_file_signature(argv[i]) == 1) {
-     print_line(0, "EWF image");
-     analyze_ewf(&argv[i], argc-i);
-     return 0;
-   }
-   else {
-     analyze_file(argv[i]);
-   }
-#endif
     print_line(0, "");
   }
 
