@@ -86,18 +86,18 @@ void detect_ext234(SECTION *section, int level)
         if (get_le_long(buf + 352) & EXT2_FLAGS_TEST_FILESYS)
         {
           print_line(level, "Ext4dev file system");
-          print_line(level, "KERNELMODULE: ext4dev");
+          // print_line(level, "KERNELMODULE: ext4dev");
         }
         else
         {
           print_line(level, "Ext4 file system");
-          print_line(level, "KERNELMODULE: ext4");
+          // print_line(level, "KERNELMODULE: ext4");
         }
       }
       else
       {
         print_line(level, "Ext3 file system");
-        print_line(level, "KERNELMODULE: ext3");
+        // print_line(level, "KERNELMODULE: ext3");
       }
     }
     else
