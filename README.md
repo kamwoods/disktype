@@ -51,14 +51,15 @@ switches in this version. Note that running disktype on device files
 like your hard disk will likely require root rights.
 
 See the online documentation at <http://disktype.sourceforge.net/doc/>
-for some example command lines.
+for some example command lines (or view the same pages offline in
+the doc/ directory in this repository).
 
 
 # Recognized Formats
 
 The following formats are recognized by this version of disktype.
 
-File systems: FAT12/FAT16/FAT32, NTFS, HPFS, MFS, HFS, HFS Plus,
+File systems: FAT12/FAT16/FAT32, ExFAT, NTFS, HPFS, MFS, HFS, HFS Plus,
   ISO9660, ext2/ext3/ext4, Minix, ReiserFS, Reiser4, Linux romfs, Linux
   cramfs, Linux squashfs, UFS (some variations), SysV FS (some
   variations), JFS, XFS, Amiga FS/FFS, Amiga SFS, Amiga PFS, BeOS BFS,
@@ -93,7 +94,8 @@ Disk images in general will also have their contents analyzed using
 the proper mapping, with the exception of the Apple UDIF format.
 
 See the online documentation at <http://disktype.sourceforge.net/doc/>
-for more details on the supported formats and their quirks.
+for more details on the supported formats and their quirks (or view the 
+same pages offline in the doc/ directory in this repository).
 
 
 # Maintenance and Planned Updates
