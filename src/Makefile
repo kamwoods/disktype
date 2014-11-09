@@ -13,10 +13,10 @@ OBJS   = main.o lib.o \
 
 TARGET = disktype
 
-CPPFLAGS = -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64
+CPPFLAGS = -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_USE_LIBEWF
 CFLAGS   = -Wall
 LDFLAGS  =
-LIBS     =
+LIBS     = -lewf
 
 ifeq ($(NOSYS),)
   system = $(shell uname)
