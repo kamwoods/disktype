@@ -3,7 +3,7 @@ disktype: Disk Format Detection
 
 * Note! I created this fork to simplify access to a patched, updated version of disktype. The current
   version of the fork applies the unattended-to Atari and BSD patches from the official respository,
-  and adds ext4 support.
+  and adds ext4 support adapted from the patch at https://github.com/Pardus-Linux/Packages/tree/master/system/base/disktype/files.
 
   You can find Christoph Pfisterer's official repository and documentation at http://disktype.sourceforge.net/
 
