@@ -47,6 +47,7 @@ void detect_atari_partmap(SECTION *section, int level);
 void detect_dos_partmap(SECTION *section, int level);
 void detect_gpt_partmap(SECTION *section, int level);
 void detect_fat(SECTION *section, int level);
+void detect_exfat(SECTION *section, int level);
 void detect_ntfs(SECTION *section, int level);
 void detect_hpfs(SECTION *section, int level);
 void detect_dos_loader(SECTION *section, int level);
@@ -131,6 +132,7 @@ DETECTOR detectors[] = {
   detect_amiga_fs,
   detect_apple_volume,
   detect_fat,
+  detect_exfat,
   detect_ntfs,
   detect_hpfs,
   detect_udf,
