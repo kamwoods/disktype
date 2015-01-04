@@ -1,11 +1,20 @@
 disktype: Disk Format Detection
 ---------------------------------------------------------------------------------------------------
 
-* Note! I created this fork to simplify access to a patched, updated version of disktype. The current
-  version of the fork applies the unattended-to Atari and BSD patches from the official respository,
-  adds ext4 support adapted from the patch at https://github.com/Pardus-Linux/Packages/tree/master/system/base/disktype/files, and exfat support from the patch at https://github.com/ericpaulbishop/gargoyle/tree/master/package/disktype/patches
+Note! I created this fork to simplify access to a patched, updated version of disktype. The current
+version of the fork applies the unattended-to Atari and BSD patches from the official respository,
+adds ext4 support adapted from the patch at 
 
-  You can find Christoph Pfisterer's official repository and documentation at http://disktype.sourceforge.net/
+* https://github.com/Pardus-Linux/Packages/tree/master/system/base/disktype/files, 
+
+and exfat support from the patch at 
+
+* https://github.com/ericpaulbishop/gargoyle/tree/master/package/disktype/patches
+
+Additional support for Expert Witness Format files based on existing (but non-functional) patch is
+in progress in the dtewf branch.
+
+You can find Christoph Pfisterer's official repository and documentation at http://disktype.sourceforge.net/
 
 # Introduction 
 
