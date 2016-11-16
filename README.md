@@ -1,7 +1,9 @@
 disktype: Disk Format Detection
 ---------------------------------------------------------------------------------------------------
 
-'''Important''': This is not the official disktype repository, nor does it track maintenance updates
+# Important 
+
+This is not the official disktype repository, nor does it track maintenance updates
 to the official repository. Unless you are involved in a project that I'm currently working on, you
 should go and get Christoph Pfisterer's official version at http://disktype.sourceforge.net/
 
